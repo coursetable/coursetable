@@ -1147,7 +1147,7 @@ export type ColorTheme = z.infer<typeof colorThemeSchema>;
 function handleColorThemeError(err: string) {
   switch (err) {
     case 'TOO_MANY_THEMES':
-      toast.error('You can have up to 20 themes');
+      toast.error('You can have up to 32 themes');
       return true;
     case 'THEME_NOT_FOUND':
       toast.error('Theme not found');

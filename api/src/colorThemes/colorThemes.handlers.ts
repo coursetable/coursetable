@@ -10,7 +10,7 @@ import {
 } from '../../drizzle/schema.js';
 import { db } from '../config.js';
 
-const MAX_THEMES_PER_USER = 20;
+const MAX_THEMES_PER_USER = 32;
 
 const ThemeBodySchema = z.object({
   name: z.string().trim().min(1).max(32),

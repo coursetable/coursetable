@@ -463,7 +463,7 @@ function Picker({
 }
 
 // Matches the API's limit
-const MAX_THEMES = 20;
+const MAX_THEMES = 32;
 
 type ThemeDraft = {
   readonly id?: number;
