@@ -7,6 +7,8 @@ import AppsDropdown from './AppsDropdown';
 import DarkModeButton from './DarkModeButton';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
+import { API_ENDPOINT } from '../../config';
+import { logout } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop } from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
@@ -53,6 +55,7 @@ function NavbarRight({
 }
 
 export default function CourseTableNavbar() {
+  const authStatus = useStore((state) => state.authStatus);
   const user = useStore((state) => state.user);
   const location = useLocation();
   const [navExpanded, setNavExpanded] = useState(false);
@@ -101,53 +104,84 @@ export default function CourseTableNavbar() {
         {showCatalogSearch && <NavbarCatalogSearch />}
         {isWorksheetPage && <NavbarWorksheetSearch isMobile={isMobile} />}
 
-        {isMobile ? (
-          <div className={styles.mobileAccountControls}>
-            <DarkModeButton className={styles.mobileDarkModeBtn} />
-            <AppsDropdown />
-            <MeDropdown
-              showMobileNavLinks
-              showInstallAsApp={isIOSNotInstalled}
-              onInstallAsApp={() => setShowPWAPrompt(true)}
-            />
-          </div>
-        ) : (
+        {/* Mobile nav toggle */}
+        <div className={styles.mobileAccountControls}>
+          <AppsDropdown />
           <Navbar.Toggle
             className={styles.navToggle}
             aria-controls="basic-navbar-nav"
           />
-        )}
+        </div>
 
         <NavbarRight wrap={!isMobile}>
-          {!isMobile && (
-            <Navbar.Collapse
-              id="basic-navbar-nav"
-              className={styles.navbarCollapse}
+          {/* On mobile, this will be a collapsed dropdown;
+              on desktop, it will be a navbar */}
+          <Navbar.Collapse
+            id="basic-navbar-nav"
+            // It must have height exactly equal to its children otherwise on
+            // desktop it won't align to the top
+            className={styles.navbarCollapse}
+          >
+            <Nav
+              onClick={() => setNavExpanded(false)}
+              className={styles.navbarLinks}
             >
-              <Nav
-                onClick={() => setNavExpanded(false)}
-                className={styles.navbarLinks}
-              >
-                <DarkModeButton className={styles.navbarDarkModeBtn} />
-                <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
-                <NavbarLink to="/worksheet">
-                  <span data-tutorial="worksheet-1">Worksheet</span>
+              <DarkModeButton className={styles.navbarDarkModeBtn} />
+              <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
+              <NavbarLink to="/worksheet">
+                <span data-tutorial="worksheet-1">Worksheet</span>
+              </NavbarLink>
+              {user?.hasEvals === false && (
+                <NavbarLink to="/challenge">
+                  <span style={{ position: 'relative' }}>
+                    <span className={styles.challengeIndicator} />
+                    Challenge
+                  </span>
                 </NavbarLink>
-                {user?.hasEvals === false && (
-                  <NavbarLink to="/challenge">
-                    <span style={{ position: 'relative' }}>
-                      <span className={styles.challengeIndicator} />
-                      Challenge
-                    </span>
-                  </NavbarLink>
-                )}
-                <div className={styles.accountControls}>
-                  <AppsDropdown />
-                  <MeDropdown />
-                </div>
-              </Nav>
-            </Navbar.Collapse>
-          )}
+              )}
+              {/* Links are in the navbar on mobile and in the me dropdown
+                  on desktop */}
+              {isMobile ? (
+                <>
+                  <NavbarLink to="/about">About</NavbarLink>
+                  <NavbarLink to="/faq">FAQ</NavbarLink>
+                  <a
+                    href="https://feedback.coursetable.com/"
+                    className={styles.navLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Feedback
+                  </a>
+                  <NavbarLink to="/releases">Release notes</NavbarLink>
+                  {isIOSNotInstalled && (
+                    <button
+                      type="button"
+                      className={styles.navLink}
+                      onClick={() => setShowPWAPrompt(true)}
+                    >
+                      Install as app
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className={styles.navLink}
+                    onClick={
+                      authStatus !== 'authenticated'
+                        ? () => {
+                            window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
+                          }
+                        : logout
+                    }
+                  >
+                    Sign {authStatus !== 'authenticated' ? 'In' : 'Out'}
+                  </button>
+                </>
+              ) : (
+                <MeDropdown />
+              )}
+            </Nav>
+          </Navbar.Collapse>
           {showCatalogSearch && <LastUpdated />}
         </NavbarRight>
       </Navbar>

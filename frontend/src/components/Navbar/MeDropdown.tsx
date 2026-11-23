@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import clsx from 'clsx';
 import { Collapse } from 'react-bootstrap';
 import type { IconType } from 'react-icons';
@@ -12,6 +12,7 @@ import {
   FcQuestions,
   FcFeedback,
   FcPuzzle,
+  FcIdea,
   FcNews,
   FcDownload,
   FcLock,
@@ -20,7 +21,10 @@ import {
 import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../../config';
 import { useYaleMoji } from '../../hooks/useYaleMoji';
-import { clearYaleMojiCache } from '../../hooks/yalemojiCache';
+import {
+  clearYaleMojiCache,
+  markYaleMojiVisit,
+} from '../../hooks/yalemojiCache';
 import { logout, type UserInfo, type YaleMojiAvatar } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
@@ -41,6 +45,7 @@ function getInitials(user: UserInfo | undefined) {
 
 function DropdownItem({
   icon: Icon,
+  iconNode,
   iconColor,
   children,
   to,
@@ -49,7 +54,8 @@ function DropdownItem({
   onClick,
   hideIcon = false,
 }: {
-  readonly icon: IconType;
+  readonly icon?: IconType;
+  readonly iconNode?: React.ReactNode;
   readonly iconColor?: string;
   readonly children: string;
   readonly to?: string;
@@ -60,9 +66,11 @@ function DropdownItem({
 }) {
   const innerText = (
     <TextComponent className={styles.itemText} type="secondary">
-      {!hideIcon && (
-        <Icon size={20} className={styles.linkIcon} color={iconColor} />
-      )}
+      {!hideIcon &&
+        (iconNode ??
+          (Icon && (
+            <Icon size={20} className={styles.linkIcon} color={iconColor} />
+          )))}
       {children}
     </TextComponent>
   );
@@ -118,7 +126,6 @@ function DropdownContent({
   readonly showInstallAsApp: boolean;
   readonly onInstallAsApp: () => void;
 }) {
-  const navigate = useNavigate();
   const { isMobile, isTablet } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -133,29 +140,6 @@ function DropdownContent({
     setIsExpanded(false);
     scrollToTop(e);
   };
-  const avatarStyle = avatar
-    ? { backgroundImage: `url("${avatar.background_url}")` }
-    : undefined;
-
-  const identityAvatar = avatar ? (
-    <YaleMojiImage
-      avatar={avatar}
-      className={styles.headerAvatar}
-      onAvatarError={onAvatarError}
-    />
-  ) : (
-    <span
-      className={clsx(
-        styles.headerAvatar,
-        styles.headerAvatarFallback,
-        styles.headerInitials,
-      )}
-      aria-hidden="true"
-    >
-      {getInitials(user)}
-    </span>
-  );
-
   return (
     <SurfaceComponent
       elevated
@@ -168,60 +152,6 @@ function DropdownContent({
         {/* Do not add vertical spacing to this div because it will break
           collapsing animation */}
         <div>
-          <div className={styles.identityHeader} style={avatarStyle}>
-            {authStatus === 'authenticated' ? (
-              <NavLink
-                to="/profile"
-                className={styles.profileLink}
-                aria-label="Edit Profile"
-                onClick={async (event) => {
-                  if (
-                    event.button !== 0 ||
-                    event.metaKey ||
-                    event.ctrlKey ||
-                    event.shiftKey ||
-                    event.altKey
-                  )
-                    return;
-                  event.preventDefault();
-                  const image =
-                    event.currentTarget.firstElementChild?.firstElementChild;
-                  if (
-                    image &&
-                    typeof image.animate === 'function' &&
-                    !window.matchMedia('(prefers-reduced-motion: reduce)')
-                      .matches
-                  ) {
-                    try {
-                      await image.animate(
-                        [
-                          {
-                            transform: window.getComputedStyle(image).transform,
-                          },
-                          { transform: 'translateY(0) scale(0.96)' },
-                        ],
-                        { duration: 120, easing: 'ease-out' },
-                      ).finished;
-                    } catch {}
-                  }
-                  setIsExpanded(false);
-                  scrollToTop(event);
-                  void navigate('/profile');
-                }}
-              >
-                <span className={styles.profileAvatarFrame}>
-                  {identityAvatar}
-                  <span className={styles.profileLabel}>
-                    <span className={styles.profileLabelText}>
-                      Edit Profile
-                    </span>
-                  </span>
-                </span>
-              </NavLink>
-            ) : (
-              identityAvatar
-            )}
-          </div>
           <div className={styles.menuItems}>
             {showMobileNavLinks && (
               <>
@@ -299,6 +229,43 @@ function DropdownContent({
               >
                 Install as app
               </DropdownItem>
+            )}
+            {authStatus === 'authenticated' && (
+              <>
+                <DropdownItem
+                  iconNode={
+                    avatar ? (
+                      <YaleMojiImage
+                        avatar={avatar}
+                        className={styles.menuAvatar}
+                        onAvatarError={onAvatarError}
+                      />
+                    ) : (
+                      <span className={styles.menuInitials} aria-hidden="true">
+                        {getInitials(user)}
+                      </span>
+                    )
+                  }
+                  to="/profile"
+                  onClick={closeAndScroll}
+                  hideIcon={showMobileNavLinks}
+                >
+                  Profile
+                </DropdownItem>
+                <DropdownItem
+                  icon={FcIdea}
+                  href={
+                    avatar
+                      ? 'https://yalemoji.com/editor?ref=coursetable'
+                      : 'https://yalemoji.com/create?ref=coursetable'
+                  }
+                  externalLink
+                  onClick={() => markYaleMojiVisit()}
+                  hideIcon={showMobileNavLinks}
+                >
+                  {avatar ? 'Edit your Yalemoji' : 'Make your Yalemoji'}
+                </DropdownItem>
+              </>
             )}
             {/* Try tutorial only on desktop */}
             {!isMobile && !isTablet && authStatus === 'authenticated' && (
