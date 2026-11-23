@@ -174,8 +174,9 @@
   right: calc(100% + 12px);
   display: flex;
   flex-direction: column;
-  width: max-content;
-  max-width: 300px;
+
+  /* Fixed so the list and editor are the same width */
+  width: 320px;
   padding: 1rem;
   background-color: var(--color-surface);
   border-radius: 8px;
@@ -197,6 +198,10 @@
   flex-direction: column;
   gap: 0.75rem;
   min-height: 0;
+
+  /* Room for inputs' focus rings, which the scroll container would clip */
+  margin: -0.25rem;
+  padding: 0.25rem;
   overflow-y: auto;
 }
 
@@ -239,7 +244,7 @@
   white-space: nowrap;
 }
 
-/* Room for the edit or copy button */
+/* Room for the edit button. Kept on every row so the swatches line up */
 .themeOptionWithAction {
   padding-right: 2.25rem;
 }
@@ -278,13 +283,17 @@
 .themeApply {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.25rem;
   min-width: 0;
   margin: 1rem 0 0;
   padding: 1rem 0 0;
   border: none;
   border-top: 1px solid var(--color-border);
   font-size: 0.875rem;
+}
+
+.themeApplyButton {
+  margin-bottom: 0.5rem;
 }
 
 .themeSwatches {
@@ -296,10 +305,6 @@
   width: 20px;
   height: 20px;
   border-radius: 4px;
-}
-
-.themeEditor {
-  width: 250px;
 }
 
 .themeEditor :global(.react-colorful) {
@@ -324,10 +329,7 @@
     inset 0 0 0 4px var(--color-surface);
 }
 
-/* Wraps to the editor's width instead of widening the panel */
 .themeDeleteWarning {
-  width: 0;
-  min-width: 100%;
   margin: 1rem 0 0;
   color: var(--color-text-secondary);
   font-size: 0.875rem;
@@ -362,24 +364,14 @@
   color: var(--color-text);
 }
 
-.dangerText,
-.dangerText:hover {
-  color: var(--bs-danger);
-}
-
 /* No room beside the modal, so cover it instead */
 @media (max-width: calc(1200px - 0.5px)) {
   .themePanel {
     inset: 0;
     width: auto;
-    max-width: none;
 
     /* Above react-colorful's pointers, which go up to z-index 3 */
     z-index: 4;
-  }
-
-  .themeEditor {
-    width: auto;
   }
 }
 

@@ -13,13 +13,7 @@ import {
   Form,
 } from 'react-bootstrap';
 import { FaEllipsisH } from 'react-icons/fa';
-import {
-  FaCheck,
-  FaChevronLeft,
-  FaPlus,
-  FaRegClone,
-  FaRegCopy,
-} from 'react-icons/fa6';
+import { FaCheck, FaChevronLeft, FaPlus, FaRegCopy } from 'react-icons/fa6';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
@@ -518,13 +512,11 @@ function ThemeOption({
   selected,
   onSelect,
   onEdit,
-  onCopy,
 }: {
   readonly theme: ColorTheme;
   readonly selected: boolean;
   readonly onSelect: () => void;
   readonly onEdit: () => void;
-  readonly onCopy?: () => Promise<void>;
 }) {
   return (
     <div className={styles.themeOptionRow}>
@@ -553,19 +545,8 @@ function ThemeOption({
             ))}
         </span>
       </button>
-      {/* The default theme can't be edited, only copied */}
-      {theme.isDefault ? (
-        onCopy && (
-          <button
-            type="button"
-            className={styles.themeActionButton}
-            onClick={onCopy}
-            aria-label={`Copy ${theme.name}`}
-          >
-            <FaRegClone />
-          </button>
-        )
-      ) : (
+      {/* The default theme can't be edited */}
+      {!theme.isDefault && (
         <button
           type="button"
           className={styles.themeActionButton}
@@ -667,27 +648,22 @@ function ThemePanel({
                   selected={theme.id === selectedTheme.id}
                   onSelect={() => onSelect(theme.id)}
                   onEdit={() => setDraft(theme)}
-                  onCopy={
-                    canAdd
-                      ? () => copyTheme(theme.name, theme.colors)
-                      : undefined
-                  }
                 />
               ))}
+              {canAdd && (
+                <button
+                  type="button"
+                  className={clsx(styles.themeOption, styles.themeNew)}
+                  // Start from whatever theme is selected
+                  onClick={() =>
+                    setDraft({ name: '', colors: selectedTheme.colors })
+                  }
+                >
+                  <FaPlus />
+                  New theme
+                </button>
+              )}
             </div>
-            {canAdd && (
-              <button
-                type="button"
-                className={clsx(styles.themeOption, styles.themeNew)}
-                // Start from whatever theme is selected
-                onClick={() =>
-                  setDraft({ name: '', colors: selectedTheme.colors })
-                }
-              >
-                <FaPlus />
-                New theme
-              </button>
-            )}
           </div>
           <fieldset
             className={styles.themeApply}
@@ -695,6 +671,7 @@ function ThemePanel({
           >
             <Button
               variant="primary"
+              className={styles.themeApplyButton}
               disabled={applying}
               onClick={async () => {
                 setApplying(true);
@@ -813,9 +790,8 @@ function ThemeEditor({
       <div className={styles.themeEditorFooter}>
         {draft.id !== undefined && (
           <>
-            <button
-              type="button"
-              className={clsx(styles.textButton, styles.dangerText)}
+            <Button
+              variant="danger"
               disabled={busy}
               onClick={() => {
                 if (confirmingDelete) void remove(draft.id!);
@@ -823,7 +799,7 @@ function ThemeEditor({
               }}
             >
               {confirmingDelete ? 'Confirm' : 'Delete'}
-            </button>
+            </Button>
             <button
               type="button"
               className={styles.textButton}
