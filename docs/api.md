@@ -497,6 +497,19 @@ Endpoints that take a request body may return 400 with `error: "INVALID_REQUEST"
 
 Notes are private to the logged-in student. There is one note per course across seasons and sections, keyed by Ferry's `same_course_id`.
 
+### `GET` `/api/notes/list`
+
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `notes`: `{ sameCourseId: number; content: string; updatedAt: number }[]`, every note the logged-in student has saved. `content` is a Tiptap JSON document and `updatedAt` is a Unix time in milliseconds.
+
 ### `POST` `/api/notes/lookup`
 
 #### Request

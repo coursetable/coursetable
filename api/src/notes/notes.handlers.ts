@@ -61,6 +61,25 @@ export const lookupCourseNote = async (
   res.json({ content: note?.content ?? '' });
 };
 
+export const listCourseNotes = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<void> => {
+  const { netId } = req.user!;
+
+  const notes = await db
+    .select({
+      sameCourseId: courseNotes.sameCourseId,
+      content: courseNotes.content,
+      updatedAt: courseNotes.updatedAt,
+    })
+    .from(courseNotes)
+    .where(eq(courseNotes.netId, netId));
+
+  res.set('Cache-Control', 'no-store');
+  res.json({ notes });
+};
+
 export const saveCourseNote = async (
   req: express.Request,
   res: express.Response,

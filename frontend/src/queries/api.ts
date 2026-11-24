@@ -1146,6 +1146,29 @@ export async function fetchCourseNote(sameCourseId: number) {
   });
 }
 
+const courseNotesSchema = z.object({
+  notes: z.array(
+    z.object({
+      sameCourseId: z.number(),
+      content: z.string(),
+      updatedAt: z.number(),
+    }),
+  ),
+});
+
+export type CourseNote = z.infer<typeof courseNotesSchema>['notes'][number];
+
+export async function fetchCourseNotes() {
+  const res = await fetchAPI('/notes/list', {
+    schema: courseNotesSchema,
+    breadcrumb: {
+      category: 'notes',
+      message: 'Fetching course notes',
+    },
+  });
+  return res?.notes;
+}
+
 export async function saveCourseNote(
   sameCourseId: number,
   content: string,
