@@ -50,3 +50,17 @@ export function applyColorDraft<T extends CourseColor & { crn: Crn }>(
     return { ...next, color: theme.colors[next.colorIndex]! };
   });
 }
+
+// Puts every course on the theme: courses keep their slot, and custom colors
+// get a random one, like a newly added course
+export function resetCourseColors<T extends CourseColor>(
+  courses: readonly T[],
+  theme: ColorTheme,
+): T[] {
+  return courses.map((course) => ({
+    ...course,
+    ...(course.colorIndex === null
+      ? randomThemeColor(theme)
+      : { color: theme.colors[course.colorIndex]! }),
+  }));
+}

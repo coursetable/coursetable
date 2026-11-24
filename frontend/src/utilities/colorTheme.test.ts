@@ -4,6 +4,7 @@ import {
   applyColorDraft,
   fallbackTheme,
   getWorksheetTheme,
+  resetCourseColors,
 } from './colorTheme';
 import type { ColorTheme } from '../queries/api';
 import type { Crn } from '../queries/graphql-types';
@@ -71,5 +72,20 @@ describe('applyColorDraft', () => {
       crn: crn(1),
       ...picked,
     });
+  });
+});
+
+describe('resetCourseColors', () => {
+  it('keeps slots and moves custom colors onto the theme', () => {
+    const [kept, custom] = resetCourseColors(
+      [
+        { color: '#aaaaaa', colorIndex: 4 },
+        { color: '#123456', colorIndex: null },
+      ],
+      next,
+    );
+    expect(kept).toEqual({ color: next.colors[4], colorIndex: 4 });
+    expect(custom!.colorIndex).not.toBeNull();
+    expect(custom!.color).toBe(next.colors[custom!.colorIndex!]);
   });
 });

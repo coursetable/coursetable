@@ -38,6 +38,7 @@ import {
   type WorksheetCourse,
 } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
+import { resetCourseColors } from '../../utilities/colorTheme';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
@@ -115,6 +116,7 @@ function WorksheetCalendarList({
     viewedPerson,
     worksheets,
     user,
+    colorThemes,
   } = useStore(
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
@@ -128,6 +130,7 @@ function WorksheetCalendarList({
       viewedPerson: state.viewedPerson,
       worksheets: state.worksheets,
       user: state.user,
+      colorThemes: state.colorThemes,
     })),
   );
 
@@ -171,6 +174,10 @@ function WorksheetCalendarList({
 
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
+
+  const [resetColorsModalOpen, setResetColorsModalOpen] = useState(false);
+  const [resettingColors, setResettingColors] = useState(false);
+  const classicTheme = colorThemes?.find((theme) => theme.isDefault);
 
   useEffect(() => {
     setPrivateState(isViewedWorksheetPrivate);
@@ -217,6 +224,34 @@ function WorksheetCalendarList({
       );
     } finally {
       setClearing(false);
+    }
+  };
+
+  const handleResetColors = async () => {
+    if (!classicTheme) return;
+    const reset = resetCourseColors(courses, classicTheme);
+    const changed = reset.flatMap(({ crn, color, colorIndex }, i) =>
+      color === courses[i]!.color && colorIndex === courses[i]!.colorIndex
+        ? []
+        : { crn, color, colorIndex },
+    );
+
+    setResettingColors(true);
+    try {
+      // Saves the theme and colors together
+      const saved = await updateWorksheetMetadata({
+        action: 'setColorTheme',
+        season: viewedSeason,
+        worksheetNumber: viewedWorksheetNumber,
+        colorThemeId: classicTheme.id,
+        courses: changed,
+      });
+      if (!saved) return;
+      await worksheetsRefresh();
+      setResetColorsModalOpen(false);
+      toast.success('Reset colors to Classic');
+    } finally {
+      setResettingColors(false);
     }
   };
 
@@ -539,8 +574,23 @@ function WorksheetCalendarList({
               />
             )}
 
-            {courses.length > 0 && (
+            {courses.length > 0 && classicTheme && (
               <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setResetColorsModalOpen(true)}
+                  disabled={resettingColors}
+                  className={styles.clearAllButton}
+                >
+                  <strong>Reset Colors</strong>
+                  <p className="text-muted small mb-0">
+                    Switch this worksheet to Classic and replace custom colors
+                  </p>
+                </button>
+              </div>
+            )}
+            {courses.length > 0 && (
+              <div className="mt-2">
                 <button
                   type="button"
                   onClick={() => setClearModalOpen(true)}
@@ -594,6 +644,48 @@ function WorksheetCalendarList({
               </div>
             ) : (
               'Save'
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={resetColorsModalOpen}
+        onHide={() => !resettingColors && setResetColorsModalOpen(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reset Colors</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>
+            Switch this worksheet to the <strong>Classic</strong> theme? Classes
+            with custom colors will get a Classic color instead.
+          </p>
+          <p className="text-muted small mb-0">This action cannot be undone.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setResetColorsModalOpen(false)}
+            disabled={resettingColors}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleResetColors}
+            disabled={resettingColors}
+            style={{ minWidth: '4rem' }}
+          >
+            {resettingColors ? (
+              <div className="ms-auto">
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              'Reset'
             )}
           </Button>
         </Modal.Footer>
