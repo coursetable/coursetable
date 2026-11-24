@@ -436,7 +436,8 @@ export const barChartColors = [
   '#00e800',
 ];
 
-export const sectionFullTooltip = 'This section is full. Updated nightly.';
+export const sectionFullTooltip =
+  'Marked full based on nightly data. Check Yale Course Search for current availability.';
 
 // The days_of_week field on course_meetings is a bitmask where the ith bit
 // (1 << i) represents whether the course meets on the ith day of the week.
