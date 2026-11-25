@@ -415,7 +415,11 @@ export const evalQuestionTags = [
   'Professor',
 ];
 
-export const worksheetColors = [
+// Preset palettes for the worksheet color picker. Each has 10 colors laid out
+// as two rows of 5.
+// Used until the user's own themes load, and for imported worksheets. The API
+// seeds each user with a copy (colorThemes.utils.ts); keep the two in sync.
+export const classicColors = [
   '#31a4d4',
   '#2cafb7',
   '#26ba9a',

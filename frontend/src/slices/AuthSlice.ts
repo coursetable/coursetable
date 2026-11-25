@@ -36,6 +36,7 @@ export const createAuthSlice: StateCreator<Store, [], [], AuthSlice> = (
         get().userRefresh(),
         get().worksheetsRefresh(),
         get().wishlistRefresh(),
+        get().colorThemesRefresh(),
         get().friendRefresh(),
         get().friendReqRefresh(),
       ]);

@@ -12,6 +12,7 @@ function harness(user?: Store['user']) {
     userRefresh: vi.fn().mockResolvedValue(undefined),
     worksheetsRefresh: vi.fn().mockResolvedValue(undefined),
     wishlistRefresh: vi.fn().mockResolvedValue(undefined),
+    colorThemesRefresh: vi.fn().mockResolvedValue(undefined),
     friendRefresh: vi.fn().mockResolvedValue(undefined),
     friendReqRefresh: vi.fn().mockResolvedValue(undefined),
   } as Partial<Store>;

@@ -1,5 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import clsx from 'clsx';
 import {
+  CloseButton,
   Overlay,
   Popover,
   Tooltip,
@@ -8,19 +10,36 @@ import {
   Button,
   DropdownButton,
   Dropdown,
+  Form,
 } from 'react-bootstrap';
+import { BsFillDice6Fill } from 'react-icons/bs';
 import { FaEllipsisH } from 'react-icons/fa';
+import { FaCheck, FaChevronLeft, FaPlus, FaRegCopy } from 'react-icons/fa6';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
 import chroma from 'chroma-js';
 import { Calendar } from 'react-big-calendar';
 import { HexColorPicker } from 'react-colorful';
+import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 import { CalendarEventBody, useEventStyle } from './CalendarEvent';
-import { updateWorksheetCourses } from '../../queries/api';
+import {
+  createColorTheme,
+  deleteColorTheme,
+  updateColorTheme,
+  updateWorksheetCourses,
+  updateWorksheetMetadata,
+  type ColorTheme,
+} from '../../queries/api';
+import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
-import { worksheetColors } from '../../utilities/constants';
+import {
+  type CourseColor,
+  fallbackTheme,
+  randomSlots,
+} from '../../utilities/colorTheme';
+import { toSeasonString } from '../../utilities/course';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
 
@@ -140,56 +159,142 @@ export function ColorPickerModal({
   readonly onClose: () => void;
 }) {
   const worksheetsRefresh = useStore((state) => state.worksheetsRefresh);
-  const { viewedSeason, viewedWorksheetNumber, openColorPickerEvent } =
-    useStore(
-      useShallow((state) => ({
-        viewedSeason: state.viewedSeason,
-        viewedWorksheetNumber: state.viewedWorksheetNumber,
-        openColorPickerEvent: state.openColorPickerEvent,
-      })),
-    );
-  const [newColor, setNewColor] = useState<string | undefined>(undefined);
+  const {
+    viewedSeason,
+    viewedWorksheetNumber,
+    courses,
+    colorThemes,
+    openColorPickerEvent,
+    updateColorPickerDraft,
+  } = useStore(
+    useShallow((state) => ({
+      viewedSeason: state.viewedSeason,
+      viewedWorksheetNumber: state.viewedWorksheetNumber,
+      courses: state.courses,
+      colorThemes: state.colorThemes,
+      openColorPickerEvent: state.openColorPickerEvent,
+      updateColorPickerDraft: state.updateColorPickerDraft,
+    })),
+  );
+  // Unsaved changes live in the store so the worksheet behind can preview them
+  const preview = useColorPickerPreview();
+  const [themePanelOpen, setThemePanelOpen] = useState(false);
 
   if (!openColorPickerEvent) return null;
 
+  const { crn } = openColorPickerEvent.listing;
+  const { theme, themeChanged } = preview;
+  const { color, colorIndex } = preview.courses.find((c) => c.crn === crn) ??
+    preview.picked ?? { color: openColorPickerEvent.color, colorIndex: null };
+
   const handleClose = () => {
-    setNewColor(undefined);
+    setThemePanelOpen(false);
+    // Also discards the draft
     onClose();
   };
 
+  const closeThemePanel = () => {
+    setThemePanelOpen(false);
+    updateColorPickerDraft({ editedTheme: undefined });
+  };
+
+  const save = async () => {
+    const changed = preview.toSave.flatMap(({ crn, color, colorIndex }, i) =>
+      color === courses[i]!.color && colorIndex === courses[i]!.colorIndex
+        ? []
+        : { crn, color, colorIndex },
+    );
+    const worksheet = {
+      season: viewedSeason,
+      worksheetNumber: viewedWorksheetNumber,
+    };
+    // Recoloring several courses (a theme change or randomizing) saves them
+    // with the theme in one request
+    const saved =
+      themeChanged || changed.length > 1
+        ? await updateWorksheetMetadata({
+            action: 'setColorTheme',
+            ...worksheet,
+            colorThemeId: theme.id,
+            courses: changed,
+          })
+        : changed.length === 0 ||
+          (await updateWorksheetCourses(
+            changed.map((c) => ({
+              action: 'update' as const,
+              ...worksheet,
+              ...c,
+            })),
+          ));
+    if (!saved) return;
+    if (themeChanged || changed.length > 0) await worksheetsRefresh();
+    handleClose();
+  };
+
   return (
-    <Modal show onHide={handleClose} centered>
+    <Modal show onHide={handleClose} centered dialogClassName={styles.dialog}>
+      <Modal.Header closeButton className={styles.modalHeader}>
+        <div className={styles.modalTop}>
+          <Modal.Title>
+            <div className={styles.modalTitle}>Change color</div>
+          </Modal.Title>
+        </div>
+      </Modal.Header>
       <Modal.Body className={styles.modalBody}>
         <Picker
-          color={newColor ?? openColorPickerEvent.color}
-          setColor={setNewColor}
+          color={color}
+          colorIndex={colorIndex}
+          onPick={(picked) => updateColorPickerDraft({ picked })}
+          presetColors={theme.colors}
+          themeName={theme.name}
+          themePanelOpen={themePanelOpen}
+          onRandomize={() =>
+            updateColorPickerDraft({
+              randomized: randomSlots(
+                courses.map((c) => c.crn),
+                theme.colors.length,
+              ),
+              // The open course is randomized too
+              picked: undefined,
+            })
+          }
+          onToggleThemePanel={() => {
+            if (themePanelOpen) closeThemePanel();
+            else setThemePanelOpen(true);
+          }}
         />
-        <Preview
-          event={openColorPickerEvent}
-          color={newColor ?? openColorPickerEvent.color}
-        />
+        <Preview event={openColorPickerEvent} color={color} />
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button
-          variant="primary"
-          onClick={async () => {
-            await updateWorksheetCourses({
-              action: 'update',
-              season: viewedSeason,
-              crn: openColorPickerEvent.listing.crn,
-              worksheetNumber: viewedWorksheetNumber,
-              color: newColor,
-            });
-            await worksheetsRefresh();
-            onClose();
-          }}
+        <button
+          type="button"
+          className={styles.textButton}
+          onClick={handleClose}
         >
-          Save changes
+          Cancel
+        </button>
+        <Button variant="primary" onClick={save}>
+          Save
         </Button>
       </Modal.Footer>
+      {themePanelOpen && (
+        <ThemePanel
+          themes={colorThemes ?? [fallbackTheme]}
+          selectedTheme={theme}
+          // A new theme recolors every course, so a custom color picked
+          // before it is dropped too (unless the worksheet locks them)
+          onSelect={(themeId) =>
+            updateColorPickerDraft({
+              themeId,
+              picked:
+                preview.picked?.colorIndex === null && !preview.lockCustomColors
+                  ? undefined
+                  : preview.picked,
+            })
+          }
+          onClose={closeThemePanel}
+        />
+      )}
     </Modal>
   );
 }
@@ -202,6 +307,7 @@ export function WorksheetMoveModal({
   const {
     viewedSeason,
     viewedWorksheetNumber,
+    courses,
     worksheetsRefresh,
     changeViewedWorksheetNumber,
     openWorksheetMoveEvent,
@@ -209,6 +315,7 @@ export function WorksheetMoveModal({
     useShallow((state) => ({
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
+      courses: state.courses,
       worksheetsRefresh: state.worksheetsRefresh,
       changeViewedWorksheetNumber: state.changeViewedWorksheetNumber,
       openWorksheetMoveEvent: state.openWorksheetMoveEvent,
@@ -239,6 +346,10 @@ export function WorksheetMoveModal({
       crn: event.listing.crn,
       worksheetNumber: newWorksheetNumber,
       color: event.color,
+      // Keep its slot so the course follows the new worksheet's theme
+      colorIndex:
+        courses.find((c) => c.listing.crn === event.listing.crn)?.colorIndex ??
+        null,
       hidden: false,
     });
 
@@ -284,57 +395,539 @@ function ColorInput({
   const [invalid, setInvalid] = useState(false);
   const [value, setValue] = useState(color);
   const [prevColor, setPrevColor] = useState(color);
+  const [copied, setCopied] = useState(false);
   if (color !== prevColor) {
     setValue(color);
     setPrevColor(color);
   }
   return (
-    <Input
-      type="text"
-      value={value}
-      isInvalid={invalid}
-      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-        const newColor = e.target.value;
-        if (chroma.valid(newColor)) {
-          setColor(newColor);
-          setInvalid(false);
-        } else {
-          setInvalid(true);
-        }
-        setValue(newColor);
-      }}
-    />
+    <div className={styles.hexRow}>
+      <Input
+        type="text"
+        className={styles.hexInput}
+        value={value}
+        isInvalid={invalid}
+        onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+          e.target.select();
+        }}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          const newColor = e.target.value;
+          if (chroma.valid(newColor)) {
+            setColor(newColor);
+            setInvalid(false);
+          } else {
+            setInvalid(true);
+          }
+          setValue(newColor);
+        }}
+      />
+      <button
+        type="button"
+        className={styles.copyButton}
+        onClick={() => {
+          navigator.clipboard.writeText(color).then(
+            () => {
+              toast.success('Color copied!');
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            },
+            () => {
+              toast.error('Failed to copy color');
+            },
+          );
+        }}
+        aria-label={copied ? 'Copied' : 'Copy hex code'}
+      >
+        {copied ? <FaCheck /> : <FaRegCopy />}
+      </button>
+    </div>
   );
 }
 
 function Picker({
   color,
-  setColor,
+  colorIndex,
+  onPick,
+  presetColors,
+  themeName,
+  themePanelOpen,
+  onRandomize,
+  onToggleThemePanel,
 }: {
   readonly color: string;
-  readonly setColor: (newColor: string) => void;
+  readonly colorIndex: number | null;
+  readonly onPick: (picked: CourseColor) => void;
+  readonly presetColors: readonly string[];
+  readonly themeName: string;
+  readonly themePanelOpen: boolean;
+  readonly onRandomize: () => void;
+  readonly onToggleThemePanel: () => void;
 }) {
+  // Anything not picked from the theme's presets is a custom color
+  const pickCustom = (newColor: string) =>
+    onPick({ color: newColor, colorIndex: null });
+  // When `color` changes quickly from outside (e.g. while the theme is
+  // edited), react-colorful can echo an older color through onChange. Only
+  // take changes while the user is using the picker.
+  const usingWheel = useRef(false);
+  const stopUsingWheel = () => {
+    usingWheel.current = false;
+  };
   return (
     <div className={styles.pickerPanel}>
-      <ColorInput color={color} setColor={setColor} />
-      <HexColorPicker color={color} onChange={setColor} />
-      <div className={styles.presetColors}>
-        {worksheetColors.map((presetColor) => (
+      <div className={styles.pickerSection}>
+        {/* Only notices input on react-colorful's own (accessible) sliders */}
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+        <div
+          onPointerDown={() => {
+            usingWheel.current = true;
+            window.addEventListener('pointerup', stopUsingWheel, {
+              once: true,
+            });
+          }}
+          onKeyDown={() => {
+            usingWheel.current = true;
+          }}
+          onKeyUp={stopUsingWheel}
+        >
+          <HexColorPicker
+            color={color}
+            onChange={(newColor) => {
+              if (usingWheel.current) pickCustom(newColor);
+            }}
+          />
+        </div>
+        <ColorInput color={color} setColor={pickCustom} />
+      </div>
+      <hr className={styles.pickerDivider} />
+      <div className={styles.pickerSection}>
+        <div className={styles.presetColors}>
+          {presetColors.map((presetColor, i) => (
+            <button
+              type="button"
+              // Themes may repeat a color
+              key={i}
+              className={clsx(
+                styles.presetColor,
+                i === colorIndex && styles.presetColorActive,
+              )}
+              style={{ background: presetColor }}
+              onClick={() => onPick({ color: presetColor, colorIndex: i })}
+              aria-label={`Set color to ${presetColor}`}
+              aria-pressed={i === colorIndex}
+            />
+          ))}
+        </div>
+        <div className={styles.themeRow}>
           <button
             type="button"
-            key={presetColor}
-            className={styles.presetColor}
-            style={{ background: presetColor }}
-            onClick={() => {
-              setColor(presetColor);
-            }}
-            aria-label={`Set color to ${presetColor}`}
-          />
-        ))}
+            className={styles.themeSelector}
+            onClick={onToggleThemePanel}
+            aria-expanded={themePanelOpen}
+            aria-label={`Color theme: ${themeName}`}
+          >
+            <FaChevronLeft className={styles.themeSelectorChevron} />
+            <span className={styles.themeSelectorName}>{themeName}</span>
+          </button>
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip id="color-picker-randomize-tooltip" {...props}>
+                Randomize
+              </Tooltip>
+            )}
+          >
+            <button
+              type="button"
+              className={styles.randomizeButton}
+              onClick={onRandomize}
+              aria-label="Randomize all colors"
+            >
+              <BsFillDice6Fill />
+            </button>
+          </OverlayTrigger>
+        </div>
       </div>
     </div>
   );
 }
+
+// Matches the API's limit
+const MAX_THEMES = 32;
+
+type ThemeDraft = {
+  readonly id?: number;
+  readonly name: string;
+  readonly colors: readonly string[];
+};
+
+function ThemeOption({
+  theme,
+  selected,
+  onSelect,
+  onEdit,
+}: {
+  readonly theme: ColorTheme;
+  readonly selected: boolean;
+  readonly onSelect: () => void;
+  readonly onEdit: () => void;
+}) {
+  return (
+    <div className={styles.themeOptionRow}>
+      <button
+        type="button"
+        className={clsx(
+          styles.themeOption,
+          styles.themeOptionWithAction,
+          selected && styles.themeOptionSelected,
+        )}
+        onClick={onSelect}
+        aria-pressed={selected}
+      >
+        <span className={styles.themeOptionName}>{theme.name}</span>
+        <span className={styles.themeSwatches}>
+          {/* Every other color gives a spread of both rows */}
+          {theme.colors
+            .filter((_, i) => i % 2 === 0)
+            .map((c, i) => (
+              <span
+                // Themes may repeat a color
+                key={i}
+                className={styles.themeSwatch}
+                style={{ background: c }}
+              />
+            ))}
+        </span>
+      </button>
+      {/* The default theme can't be edited */}
+      {!theme.isDefault && (
+        <button
+          type="button"
+          className={styles.themeActionButton}
+          onClick={onEdit}
+          aria-label={`Edit ${theme.name}`}
+        >
+          <MdEdit />
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ThemePanel({
+  themes,
+  selectedTheme,
+  onSelect,
+  onClose,
+}: {
+  readonly themes: readonly ColorTheme[];
+  readonly selectedTheme: ColorTheme;
+  readonly onSelect: (id: number) => void;
+  readonly onClose: () => void;
+}) {
+  const {
+    worksheets,
+    colorThemesRefresh,
+    worksheetsRefresh,
+    updateColorPickerDraft,
+  } = useStore(
+    useShallow((state) => ({
+      worksheets: state.worksheets,
+      colorThemesRefresh: state.colorThemesRefresh,
+      worksheetsRefresh: state.worksheetsRefresh,
+      updateColorPickerDraft: state.updateColorPickerDraft,
+    })),
+  );
+  const [copying, setCopying] = useState(false);
+  const [draft, setDraft] = useState<ThemeDraft | null>(null);
+
+  const closeEditor = () => {
+    setDraft(null);
+    // Stop previewing the edited colors
+    updateColorPickerDraft({ editedTheme: undefined });
+  };
+
+  const canAdd = themes.length < MAX_THEMES && !copying;
+
+  const copyTheme = async (name: string, colors: readonly string[]) => {
+    setCopying(true);
+    const created = await createColorTheme(`${name} (copy)`.slice(0, 32), [
+      ...colors,
+    ]);
+    if (created) await colorThemesRefresh();
+    setCopying(false);
+    closeEditor();
+  };
+
+  // The worksheets (in any season, newest first) that use a theme
+  const worksheetsUsing = (id: number) =>
+    [...(worksheets ?? [])]
+      .sort(([a], [b]) => b.localeCompare(a))
+      .flatMap(([season, seasonWorksheets]) =>
+        [...seasonWorksheets]
+          .filter(([, ws]) => ws.colorThemeId === id)
+          .map(([worksheetNumber, ws]) => ({
+            key: `${season}-${worksheetNumber}`,
+            label: `${toSeasonString(season)} – ${ws.name}`,
+          })),
+      );
+
+  const title = draft
+    ? draft.id === undefined
+      ? 'New theme'
+      : 'Edit theme'
+    : 'Themes';
+
+  return (
+    <section className={styles.themePanel} aria-label={title}>
+      <div className={styles.themePanelHeader}>
+        <span>{title}</span>
+        <CloseButton onClick={onClose} aria-label="Close themes" />
+      </div>
+      {draft ? (
+        <ThemeEditor
+          key={draft.id ?? 'new'}
+          draft={draft}
+          usedBy={draft.id === undefined ? [] : worksheetsUsing(draft.id)}
+          canCopy={canAdd}
+          onCopy={copyTheme}
+          onColorsChange={(colors) => {
+            // Preview an existing theme's edit on worksheets using it
+            if (draft.id !== undefined)
+              updateColorPickerDraft({ editedTheme: { id: draft.id, colors } });
+          }}
+          onCancel={closeEditor}
+          onSaved={async (saved) => {
+            // The API recolored courses on worksheets using the theme
+            await Promise.all([colorThemesRefresh(), worksheetsRefresh()]);
+            onSelect(saved.id);
+            closeEditor();
+          }}
+          onDeleted={async () => {
+            // The API reset worksheets that used it to the default theme
+            await Promise.all([colorThemesRefresh(), worksheetsRefresh()]);
+            closeEditor();
+          }}
+        />
+      ) : (
+        <div className={styles.themePanelBody}>
+          <div className={styles.themeList}>
+            {themes.map((theme) => (
+              <ThemeOption
+                key={theme.id}
+                theme={theme}
+                selected={theme.id === selectedTheme.id}
+                onSelect={() => onSelect(theme.id)}
+                onEdit={() => setDraft(theme)}
+              />
+            ))}
+            {canAdd && (
+              <button
+                type="button"
+                className={clsx(styles.themeOption, styles.themeNew)}
+                // Start from whatever theme is selected
+                onClick={() =>
+                  setDraft({ name: '', colors: selectedTheme.colors })
+                }
+              >
+                <FaPlus />
+                New theme
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ThemeEditor({
+  draft,
+  usedBy,
+  canCopy,
+  onCopy,
+  onColorsChange,
+  onCancel,
+  onSaved,
+  onDeleted,
+}: {
+  readonly draft: ThemeDraft;
+  readonly usedBy: readonly { key: string; label: string }[];
+  readonly canCopy: boolean;
+  readonly onCopy: (name: string, colors: readonly string[]) => Promise<void>;
+  readonly onColorsChange: (colors: readonly string[]) => void;
+  readonly onCancel: () => void;
+  readonly onSaved: (theme: ColorTheme) => Promise<void>;
+  readonly onDeleted: () => Promise<void>;
+}) {
+  const [name, setName] = useState(draft.name);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const isNew = draft.id === undefined;
+  // Ready to name a new theme right away
+  useEffect(() => {
+    if (isNew) nameInputRef.current?.focus();
+  }, [isNew]);
+  const [colors, setColors] = useState(draft.colors);
+  const [activeSlot, setActiveSlot] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [keepColors, setKeepColors] = useState(false);
+
+  const setSlotColor = (color: string) => {
+    const next = colors.map((c, i) => (i === activeSlot ? color : c));
+    setColors(next);
+    onColorsChange(next);
+  };
+  // The API only accepts #rrggbb
+  const normalizedColors = () => colors.map((c) => chroma(c).hex('rgb'));
+
+  const save = async () => {
+    setBusy(true);
+    // Matches the placeholder
+    const savedName = name.trim() || 'My theme';
+    const saved =
+      draft.id === undefined
+        ? await createColorTheme(savedName, normalizedColors())
+        : await updateColorTheme(draft.id, savedName, normalizedColors());
+    if (saved) await onSaved(saved);
+    setBusy(false);
+  };
+
+  const remove = async (id: number) => {
+    setBusy(true);
+    if (await deleteColorTheme(id, keepColors)) await onDeleted();
+    setBusy(false);
+  };
+
+  return (
+    <>
+      <div className={clsx(styles.themePanelBody, styles.themeEditor)}>
+        <Input
+          type="text"
+          placeholder="My theme"
+          aria-label="Theme name"
+          maxLength={32}
+          ref={nameInputRef}
+          value={name}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setName(e.target.value)
+          }
+        />
+        <div className={styles.presetColors}>
+          {colors.map((c, i) => (
+            <button
+              type="button"
+              // Slots are positional and may repeat a color
+              key={i}
+              className={clsx(
+                styles.presetColor,
+                i === activeSlot && styles.presetColorActive,
+              )}
+              style={{ background: c }}
+              onClick={() => setActiveSlot(i)}
+              aria-label={`Edit color ${i + 1}`}
+              aria-pressed={i === activeSlot}
+            />
+          ))}
+        </div>
+        <HexColorPicker color={colors[activeSlot]} onChange={setSlotColor} />
+        <ColorInput color={colors[activeSlot]!} setColor={setSlotColor} />
+      </div>
+      {confirmingDelete &&
+        (usedBy.length > 0 ? (
+          // Covers the editor so the affected worksheets can't be missed
+          <div
+            className={styles.themeDeleteOverlay}
+            role="alertdialog"
+            aria-labelledby="theme-delete-title"
+          >
+            <div id="theme-delete-title" className={styles.themePanelHeader}>
+              Delete {draft.name}?
+            </div>
+            <div className={styles.themeDeleteBody}>
+              <p>This theme is used by the following worksheets:</p>
+              <ul>
+                {usedBy.map(({ key, label }) => (
+                  <li key={key}>{label}</li>
+                ))}
+              </ul>
+              <p>
+                {keepColors
+                  ? 'Courses will keep their current colors.'
+                  : 'All courses will switch to Classic colors.'}
+              </p>
+              <Form.Check
+                type="switch"
+                id="theme-delete-keep-colors-switch"
+                label="Keep current colors"
+                checked={keepColors}
+                onChange={(e) => setKeepColors(e.currentTarget.checked)}
+              />
+            </div>
+            <div className={styles.themeEditorFooter}>
+              <div className={styles.themeEditorActions}>
+                <button
+                  type="button"
+                  className={styles.textButton}
+                  disabled={busy}
+                  onClick={() => setConfirmingDelete(false)}
+                >
+                  Cancel
+                </button>
+                <Button
+                  variant="danger"
+                  disabled={busy}
+                  onClick={() => remove(draft.id!)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p className={styles.themeDeleteWarning}>Delete this theme?</p>
+        ))}
+      <div className={styles.themeEditorFooter}>
+        {draft.id !== undefined && (
+          <>
+            <Button
+              variant="danger"
+              disabled={busy}
+              onClick={() => {
+                if (confirmingDelete) void remove(draft.id!);
+                else setConfirmingDelete(true);
+              }}
+            >
+              {confirmingDelete ? 'Confirm' : 'Delete'}
+            </Button>
+            <button
+              type="button"
+              className={styles.textButton}
+              disabled={busy || !canCopy}
+              onClick={() => onCopy(name.trim() || draft.name, colors)}
+            >
+              Copy
+            </button>
+          </>
+        )}
+        <div className={styles.themeEditorActions}>
+          <button
+            type="button"
+            className={styles.textButton}
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <Button variant="primary" disabled={busy} onClick={save}>
+            Save
+          </Button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+const MIN_PREVIEW_WINDOW = 2;
 
 function Preview({
   event,
@@ -344,15 +937,25 @@ function Preview({
   readonly color: string;
 }) {
   const eventStyleGetter = useEventStyle();
-  const tempEvent = { ...event, color };
+  // Walking-time badges only make sense on the real calendar
+  const tempEvent = { ...event, color, walkBefore: undefined };
+
+  // Hour-aligned window with at least 15 minutes of padding around the block
+  const toHours = (d: Date) => d.getHours() + d.getMinutes() / 60;
+  const padding = 15 / 60;
+  const minHour = Math.max(Math.floor(toHours(tempEvent.start) - padding), 0);
+  const maxHour = Math.max(
+    minHour + MIN_PREVIEW_WINDOW,
+    Math.ceil(toHours(tempEvent.end) + padding),
+  );
 
   const start = new Date(tempEvent.start);
-  if (start.getMinutes() === 0) start.setHours(start.getHours() - 1);
-  start.setMinutes(0);
+  start.setHours(minHour, 0, 0, 0);
 
-  const end = new Date(tempEvent.end);
-  end.setHours(end.getHours() + 1);
-  end.setMinutes(0);
+  const end = new Date(tempEvent.start);
+  // Hour 24 would roll over to the next day
+  if (maxHour >= 24) end.setHours(23, 59, 0, 0);
+  else end.setHours(maxHour, 0, 0, 0);
 
   return (
     <SurfaceComponent className={styles.eventPreview}>

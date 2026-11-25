@@ -12,12 +12,17 @@ import {
 } from './user.utils.js';
 
 import {
+  colorThemes,
   studentBluebookSettings,
   worksheetCourses,
   worksheets,
   wishlistCourses,
 } from '../../drizzle/schema.js';
+import { ensureColorThemesSeeded } from '../colorThemes/colorThemes.utils.js';
 import { db, graphqlClient } from '../config.js';
+
+// Position in the worksheet's theme; null for a custom color
+const ColorIndexSchema = z.number().int().min(0).max(9).nullable();
 
 const UpdateWorksheetCourseReqItemSchema = z.intersection(
   z.object({
@@ -29,6 +34,7 @@ const UpdateWorksheetCourseReqItemSchema = z.intersection(
     z.object({
       action: z.literal('add'),
       color: z.string().refine((val) => chroma.valid(val)),
+      colorIndex: ColorIndexSchema.optional(),
       hidden: z.boolean(),
     }),
     z.object({
@@ -47,6 +53,7 @@ const UpdateWorksheetCourseReqItemSchema = z.intersection(
         .string()
         .refine((val) => chroma.valid(val))
         .optional(),
+      colorIndex: ColorIndexSchema.optional(),
       hidden: z.boolean().optional(),
     }),
   ]),
@@ -58,16 +65,17 @@ const UpdateWorksheetCoursesReqBodySchema = z.union([
 ]);
 
 async function updateWorksheetCourse(
-  {
-    action,
-    season,
-    crn,
-    worksheetNumber,
-    color,
-    hidden,
-  }: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
+  body: z.infer<typeof UpdateWorksheetCourseReqItemSchema>,
   netId: string,
 ): Promise<string | undefined> {
+  const { action, season, crn, worksheetNumber, color, hidden } = body;
+  // A color sent without a position (e.g. from an older client) is custom
+  const colorIndex =
+    'colorIndex' in body && body.colorIndex !== undefined
+      ? body.colorIndex
+      : color === undefined
+        ? undefined
+        : null;
   let existingMeta = await db.query.worksheets.findFirst({
     where: and(
       eq(worksheets.netId, netId),
@@ -114,6 +122,7 @@ async function updateWorksheetCourse(
         worksheetId: existingMeta.id,
         crn,
         color,
+        colorIndex,
         hidden,
       })
       .onConflictDoNothing({
@@ -153,7 +162,7 @@ async function updateWorksheetCourse(
     if (!existing) return 'NOT_BOOKMARKED';
     await db
       .update(worksheetCourses)
-      .set({ color, hidden })
+      .set({ color, colorIndex, hidden })
       .where(
         and(
           eq(worksheetCourses.worksheetId, existingMeta.id),
@@ -242,6 +251,7 @@ export const getUserWorksheet = async (
 ): Promise<void> => {
   const { netId } = req.user!;
 
+  await ensureColorThemesSeeded(netId);
   const userWorksheets = await db.query.worksheets.findMany({
     where: eq(worksheets.netId, netId),
     columns: {
@@ -250,6 +260,8 @@ export const getUserWorksheet = async (
       worksheetNumber: true,
       name: true,
       private: true,
+      lockCustomColors: true,
+      colorThemeId: true,
       personalBlocks: true,
     },
     with: {
@@ -257,6 +269,7 @@ export const getUserWorksheet = async (
         columns: {
           crn: true,
           color: true,
+          colorIndex: true,
           hidden: true,
         },
       },
@@ -328,6 +341,28 @@ const SetPrivateWorksheetSchema = z.object({
   private: z.boolean(),
 });
 
+const SetLockCustomColorsWorksheetSchema = z.object({
+  action: z.literal('setLockCustomColors'),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetNumber: z.number().int().min(0),
+  lockCustomColors: z.boolean(),
+});
+
+const SetColorThemeWorksheetSchema = z.object({
+  action: z.literal('setColorTheme'),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetNumber: z.number().int().min(0),
+  colorThemeId: z.number().int().positive(),
+  // Courses recolored for the new theme, saved together with it
+  courses: z.array(
+    z.object({
+      crn: z.number(),
+      color: z.string().refine((val) => chroma.valid(val)),
+      colorIndex: ColorIndexSchema,
+    }),
+  ),
+});
+
 const SetPersonalBlocksSchema = z.object({
   action: z.literal('setPersonalBlocks'),
   season: z
@@ -344,6 +379,8 @@ const UpdateWorksheetMetadataSchema = z.union([
   DeleteWorksheetSchema,
   RenameWorksheetSchema,
   SetPrivateWorksheetSchema,
+  SetLockCustomColorsWorksheetSchema,
+  SetColorThemeWorksheetSchema,
 ]);
 
 export const updateWorksheetMetadata = async (
@@ -472,6 +509,78 @@ export const updateWorksheetMetadata = async (
       .returning({ worksheetNumber: worksheets.worksheetNumber });
 
     if (renamedWorksheets.length === 0) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    res.sendStatus(200);
+  } else if (action === 'setColorTheme') {
+    const { worksheetNumber, colorThemeId, courses } = bodyParseRes.data;
+
+    const theme = await db.query.colorThemes.findFirst({
+      where: and(
+        eq(colorThemes.id, colorThemeId),
+        eq(colorThemes.netId, netId),
+      ),
+      columns: { id: true },
+    });
+    if (!theme) {
+      res.status(400).json({ error: 'THEME_NOT_FOUND' });
+      return;
+    }
+
+    // One transaction, so the worksheet never ends up with the new theme but
+    // the old colors (or the reverse)
+    const updated = await db.transaction(async (tx) => {
+      const [worksheet] = await tx
+        .update(worksheets)
+        .set({ colorThemeId })
+        .where(
+          and(
+            eq(worksheets.netId, netId),
+            eq(worksheets.season, season),
+            eq(worksheets.worksheetNumber, worksheetNumber),
+          ),
+        )
+        .returning({ id: worksheets.id });
+      if (!worksheet) return false;
+      // A course that's no longer in the worksheet just matches nothing
+      await Promise.all(
+        courses.map(({ crn, color, colorIndex }) =>
+          tx
+            .update(worksheetCourses)
+            .set({ color, colorIndex })
+            .where(
+              and(
+                eq(worksheetCourses.worksheetId, worksheet.id),
+                eq(worksheetCourses.crn, crn),
+              ),
+            ),
+        ),
+      );
+      return true;
+    });
+
+    if (!updated) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    res.sendStatus(200);
+  } else if (action === 'setLockCustomColors') {
+    const { worksheetNumber, lockCustomColors } = bodyParseRes.data;
+
+    const updatedWorksheets = await db
+      .update(worksheets)
+      .set({ lockCustomColors })
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
+        ),
+      )
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
+
+    if (updatedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }

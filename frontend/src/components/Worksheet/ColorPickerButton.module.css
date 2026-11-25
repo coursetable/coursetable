@@ -2,48 +2,442 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 1em 2em;
+  gap: 1.5rem;
+}
+
+/* Copied from CourseModal.module.css (minus its 800px width and 90% height) */
+.dialog :global(.modal-content) {
+  background-color: var(--color-surface);
+  border: none !important;
+  border-radius: 8px !important;
+  overflow: visible;
+}
+
+.dialog :global(.modal-header) {
+  display: flex !important;
+  padding: 1rem 1rem 0 !important;
+}
+
+.dialog :global(.modal-header) :global(.close) {
+  color: var(--color-text);
+}
+
+.dialog :global(.modal-dialog) {
+  transition: transform 0.1s ease-out !important;
+}
+
+.modalHeader {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader :global(.btn-close) {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: var(--color-text-secondary);
+}
+
+/* Copied from CourseModal/Header/InfoRow.module.css */
+.modalTop {
+  width: calc(100% - 1rem);
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-top: 0.5rem;
+  margin-left: 0.5rem;
+
+  /* The course modal's tab row fills this gap above the divider */
+  margin-bottom: 0.75rem;
+}
+
+.modalTitle {
+  font-weight: 550;
+  line-height: 1.2 !important;
+  padding-right: 2.5rem;
 }
 
 .pickerPanel {
   display: flex;
   flex-direction: column;
+  width: 200px;
+}
+
+.pickerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pickerDivider {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  opacity: 1;
+}
+
+.pickerPanel :global(.react-colorful) {
+  width: 100%;
+}
+
+.presetColors {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.presetColor {
+  aspect-ratio: 1;
+  border: none;
+  padding: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.hexRow {
+  position: relative;
+}
+
+.hexRow .hexInput {
+  padding-right: 2.5rem;
+  transition:
+    border-color 0.1s,
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+/* Bootstrap's invalid icon would sit under the copy button */
+.hexRow .hexInput:global(.is-invalid) {
+  padding-right: 2.5rem;
+  background-image: none;
+}
+
+.copyButton {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  transition: color 0.1s;
 }
 
-.pickerPanel > input {
-  margin-bottom: 0.25rem;
+.copyButton:hover {
+  color: var(--color-text);
 }
 
-.pickerPanel :global(.react-colorful__last-control) {
-  border-radius: 0;
+.themeSelector {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 0.5rem;
+
+  /* Lets a long theme name truncate instead of pushing the dice aside */
+  min-width: 0;
+  padding: 0.375rem 0.75rem;
+  border: solid 2px var(--color-border-control);
+  border-radius: 8px;
+  background-color: var(--color-select);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  text-align: left;
+  transition:
+    border-color 0.1s,
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.themeSelector:hover {
+  border-color: hsl(0deg 0% 70%);
+}
+
+.themeRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Matches the theme selector beside it */
+.randomizeButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.625rem;
+  border: solid 2px var(--color-border-control);
+  border-radius: 8px;
+  background-color: var(--color-select);
+  color: var(--color-text-secondary);
+  transition:
+    border-color 0.1s,
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.randomizeButton:hover {
+  border-color: hsl(0deg 0% 70%);
+  color: var(--color-text);
+}
+
+.themeSelectorName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.themeSelectorChevron {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+/* Sits left of the modal at its full height; .dialog lets .modal-content
+   overflow */
+.themePanel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(100% + 12px);
+  display: flex;
+  flex-direction: column;
+
+  /* Fixed so the list and editor are the same width */
+  width: 320px;
+  padding: 1rem;
+  background-color: var(--color-surface);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.themePanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-weight: 550;
+}
+
+/* Scrolls on its own so the header and footer stay in place */
+.themePanelBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+
+  /* Room for inputs' focus rings, which the scroll container would clip */
+  margin: -0.25rem;
+  padding: 0.25rem;
+  overflow-y: auto;
+}
+
+.themeList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.themeOptionRow {
+  position: relative;
+}
+
+.themeOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background: none;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  text-align: left;
+  transition:
+    background-color 0.1s,
+    border-color 0.1s;
+}
+
+.themeOption:hover {
+  background-color: var(--color-surface-active);
+}
+
+.themeOptionName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Room for the edit button. Kept on every row so the swatches line up */
+.themeOptionWithAction {
+  padding-right: 2.25rem;
+}
+
+.themeActionButton {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  display: flex;
+  padding: 0.25rem;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  transform: translateY(-50%);
+  transition: color 0.1s;
+}
+
+.themeActionButton:hover {
+  color: var(--color-text);
+}
+
+.themeNew {
+  flex-shrink: 0;
+  justify-content: center;
+  gap: 0.5rem;
+  border-style: dashed;
+  color: var(--color-text-secondary);
+}
+
+/* Matches react-select's default selected-option blue (season/worksheet dropdowns) */
+.themeOptionSelected {
+  border-color: #2684ff;
+}
+
+/* Divider groups the switches with the button they configure */
+.themeSwatches {
+  display: flex;
+  gap: 4px;
+}
+
+.themeSwatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+/* Room for react-colorful's 28px pointers, which stick out half their width
+   at the picker's edges. They can still land a subpixel past it, so never
+   scroll sideways. */
+.themeEditor {
+  margin-inline: -14px;
+  padding-inline: 14px;
+  overflow-x: hidden;
+}
+
+.themeEditor :global(.react-colorful) {
+  flex-shrink: 0;
+  width: 100%;
+  height: 160px;
+}
+
+/* Inset so the scroll container doesn't clip it. On a pseudo-element because
+   index.css clears box-shadow on click-focused buttons */
+.presetColorActive {
+  position: relative;
+}
+
+.presetColorActive::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 2px #2684ff,
+    inset 0 0 0 4px var(--color-surface);
+}
+
+.themeDeleteWarning {
+  margin: 1rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Covers the whole panel, header included */
+.themeDeleteOverlay {
+  position: absolute;
+  inset: 0;
+
+  /* Above react-colorful's pointers, which go up to z-index 3 */
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: inherit;
+  background-color: var(--color-surface);
+}
+
+.themeDeleteBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  font-size: 0.875rem;
+}
+
+.themeDeleteBody p {
+  margin: 0 0 0.5rem;
+}
+
+.themeDeleteBody ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.themeEditorFooter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.themeEditorActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.textButton {
+  padding: 0.375rem 0.5rem;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  transition: color 0.1s;
+}
+
+.textButton:hover {
+  color: var(--color-text);
+}
+
+/* No room beside the modal, so cover it instead */
+@media (max-width: calc(1200px - 0.5px)) {
+  .themePanel {
+    inset: 0;
+    width: auto;
+
+    /* Above react-colorful's pointers, which go up to z-index 3 */
+    z-index: 4;
+  }
 }
 
 .eventPreview {
-  width: 180px;
+  flex: 1;
+  min-width: 0;
 }
 
 .eventPreview :global(.rbc-time-gutter) {
   display: none;
 }
 
-.presetColors {
-  display: flex;
-  justify-content: center;
-  padding: 12px;
-  flex-wrap: wrap;
-  width: 200px;
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 8px 8px;
-}
-
-.presetColor {
-  width: 24px;
-  height: 24px;
-  margin: 4px;
-  border: none;
-  padding: 0;
-  border-radius: 4px;
-  cursor: pointer;
-  outline: none;
+/* The global override strips the time view border, leaving no right edge */
+.eventPreview :global(.rbc-time-view) {
+  border-right: 1px solid var(--color-border) !important;
 }

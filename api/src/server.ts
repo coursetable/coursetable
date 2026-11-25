@@ -17,6 +17,7 @@ import canny from './canny/canny.routes.js';
 import catalog from './catalog/catalog.routes.js';
 import { fetchCatalog } from './catalog/catalog.utils.js';
 import challenge from './challenge/challenge.routes.js';
+import colorThemes from './colorThemes/colorThemes.routes.js';
 import {
   isDev,
   API_PORT,
@@ -147,6 +148,7 @@ user(app);
 profile(app);
 linkPreview(app);
 savedSearches(app);
+colorThemes(app);
 
 app.get('/api/ping', (req, res) => {
   res.json('pong');

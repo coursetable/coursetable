@@ -25,6 +25,7 @@ import { useShallow } from 'zustand/react/shallow';
 import FriendsDropdown from './FriendsDropdown';
 import SeasonDropdown from './SeasonDropdown';
 import WorksheetCalendarList from './WorksheetCalendarList';
+import { ColorPickerModal } from './WorksheetItemActionsButton';
 import WorksheetNumDropdown from './WorksheetNumberDropdown';
 import WorksheetStats from './WorksheetStats';
 import { CARTO_API_KEY } from '../../config';
@@ -465,12 +466,19 @@ function MarkerPopup({ group }: { readonly group: MarkerGroup }) {
 }
 
 function WorksheetMap() {
-  const { courses, hoverCourse, isMobile, isExoticWorksheet } = useStore(
+  const {
+    courses,
+    hoverCourse,
+    isMobile,
+    isExoticWorksheet,
+    setOpenColorPickerEvent,
+  } = useStore(
     useShallow((state) => ({
       courses: state.courses,
       hoverCourse: state.hoverCourse,
       isMobile: state.isMobile,
       isExoticWorksheet: state.worksheetMemo.getIsExoticWorksheet(state),
+      setOpenColorPickerEvent: state.setOpenColorPickerEvent,
     })),
   );
 
@@ -669,6 +677,7 @@ function WorksheetMap() {
           missingBuildingCodes={missingBuildingCodes}
         />
       </div>
+      <ColorPickerModal onClose={() => setOpenColorPickerEvent(null)} />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import {
   bigserial,
   serial,
   integer,
+  smallint,
 } from 'drizzle-orm/pg-core';
 import type { PersonalBlock } from '../src/user/personalBlock.js';
 
@@ -25,6 +26,8 @@ export const studentBluebookSettings = pgTable('studentBluebookSettings', {
   netId: varchar('netId', { length: 8 }).primaryKey().notNull(),
   evaluationsEnabled: boolean('evaluationsEnabled').notNull(),
   evaluationsRevoked: boolean('evaluationsRevoked').notNull().default(false),
+  // Whether the default color themes have been copied to this user
+  colorThemesSeeded: boolean('colorThemesSeeded').notNull().default(false),
   firstName: varchar('firstName', { length: 256 }).default(sql`NULL`),
   lastName: varchar('lastName', { length: 256 }).default(sql`NULL`),
   preferredFirstName: varchar('preferredFirstName', { length: 256 }).default(
@@ -98,6 +101,22 @@ export const studentFriends = pgTable(
   }),
 );
 
+export const colorThemes = pgTable(
+  'colorThemes',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    name: varchar('name', { length: 32 }).notNull(),
+    // Always 10 hex codes; courses refer to them by position (colorIndex)
+    colors: varchar('colors', { length: 7 }).array().notNull(),
+    // Each user's Classic, which can't be edited or deleted
+    isDefault: boolean('isDefault').notNull().default(false),
+  },
+  (table) => ({
+    colorThemesNetidIdx: index('color_themes_netid_idx').on(table.netId),
+  }),
+);
+
 export const worksheetCourses = pgTable(
   'worksheetCourses',
   {
@@ -108,6 +127,8 @@ export const worksheetCourses = pgTable(
       .references(() => worksheets.id),
     crn: integer('crn').notNull(),
     color: varchar('color', { length: 32 }).notNull(),
+    // Position of the color in the worksheet's theme; null for custom colors
+    colorIndex: smallint('colorIndex'),
     // Hidden can be null, which means the hidden status is unknown.
     // In the past hidden status was stored in client side, so unless
     // the user has synced hidden state with the server, it will be null.
@@ -135,6 +156,12 @@ export const worksheets = pgTable(
       .default([]),
     name: varchar('name', { length: 64 }).notNull(),
     private: boolean('private').notNull().default(false),
+    // Theme changes, randomizing and resets leave custom colors alone
+    lockCustomColors: boolean('lockCustomColors').notNull().default(false),
+    // Null means the user's default theme (Classic)
+    colorThemeId: integer('colorThemeId').references(() => colorThemes.id, {
+      onDelete: 'set null',
+    }),
   },
   (table) => ({
     worksheetsUniqueIdx: uniqueIndex('worksheets_unique_idx').on(

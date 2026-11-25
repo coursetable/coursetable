@@ -8,6 +8,7 @@ import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import type { CatalogListing } from '../../queries/api';
 import { useStore } from '../../store';
+import { getPreviewCalendarEvent } from '../../utilities/calendar';
 import {
   formatSectionSuffix,
   toLocationsSummary,
@@ -15,13 +16,22 @@ import {
 import { useCourseModalLink } from '../../utilities/display';
 import styles from './WorksheetCalendarListItem.module.css';
 
+// Popper anchors left-placed overlays to the right edge of the page by
+// default, so they jump when the modal's scroll lock hides the scrollbar.
+// Always position from the top-left instead.
+const colorTooltipPopperConfig = {
+  modifiers: [{ name: 'computeStyles', options: { adaptive: false } }],
+};
+
 type WorksheetCalendarListItemProps = {
   readonly listing: CatalogListing;
+  readonly color: string;
   readonly hidden: boolean;
 };
 
 export default function WorksheetCalendarListItem({
   listing,
+  color,
   hidden,
 }: WorksheetCalendarListItemProps) {
   const {
@@ -33,10 +43,19 @@ export default function WorksheetCalendarListItem({
   } = useWorksheetCalendarListContext();
   const target = useCourseModalLink(listing);
   const setHoverCourse = useStore((state) => state.setHoverCourse);
-  const { viewedPerson, user } = useStore(
+  const {
+    viewedPerson,
+    viewedSeason,
+    user,
+    isReadonlyWorksheet,
+    setOpenColorPickerEvent,
+  } = useStore(
     useShallow((state) => ({
       viewedPerson: state.viewedPerson,
+      viewedSeason: state.viewedSeason,
       user: state.user,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
+      setOpenColorPickerEvent: state.setOpenColorPickerEvent,
     })),
   );
   const locationSummary = toLocationsSummary(listing.course, user?.hasEvals);
@@ -63,12 +82,43 @@ export default function WorksheetCalendarListItem({
       className={clsx(
         styles.listItem,
         isHighlighted && styles.listItemHighlighted,
+        hidden && styles.listItemHidden,
         'py-1',
         'px-2',
       )}
+      style={{ '--course-color': color } as React.CSSProperties}
       onMouseEnter={() => setHoverCourse(listing.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
+      {isReadonlyWorksheet ? (
+        <span className={styles.colorTab} aria-hidden="true" />
+      ) : (
+        <OverlayTrigger
+          placement="left"
+          flip
+          trigger="hover"
+          popperConfig={colorTooltipPopperConfig}
+          overlay={
+            <Tooltip
+              id={`color-tab-${listing.crn}`}
+              className={styles.colorTabTooltip}
+            >
+              <small>Change color</small>
+            </Tooltip>
+          }
+        >
+          <button
+            type="button"
+            className={clsx(styles.colorTab, styles.colorTabEditable)}
+            onClick={() =>
+              setOpenColorPickerEvent(
+                getPreviewCalendarEvent(listing, color, viewedSeason),
+              )
+            }
+            aria-label={`Change color of ${listing.course_code}`}
+          />
+        </OverlayTrigger>
+      )}
       <Link
         to={target}
         className={clsx(

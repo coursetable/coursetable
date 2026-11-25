@@ -32,11 +32,13 @@ import {
   updateWorksheetMetadata,
 } from '../../queries/api';
 import type { Crn, Season } from '../../queries/graphql-types';
+import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import {
   useWorksheetNumberOptions,
   type WorksheetCourse,
 } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
+import { applyTheme } from '../../utilities/colorTheme';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
@@ -47,6 +49,7 @@ type CourseImportAction = {
   worksheetNumber: number;
   action: 'add';
   color: string;
+  colorIndex: number | null;
   hidden: boolean;
 };
 
@@ -71,6 +74,7 @@ function buildCourseImports(
       worksheetNumber: targetWorksheetNumber,
       action: 'add',
       color: course.color,
+      colorIndex: course.colorIndex,
       hidden: course.hidden ?? false,
     });
   }
@@ -99,8 +103,9 @@ function WorksheetCalendarList({
   showWalkingTimes = true,
   onShowWalkingTimesChange,
 }: WorksheetCalendarListProps) {
+  // Shows the color picker's unsaved changes
+  const { courses } = useColorPickerPreview();
   const {
-    courses,
     viewedSeason,
     viewedWorksheetNumber,
     isReadonlyWorksheet,
@@ -111,9 +116,9 @@ function WorksheetCalendarList({
     viewedPerson,
     worksheets,
     user,
+    colorThemes,
   } = useStore(
     useShallow((state) => ({
-      courses: state.courses,
       viewedSeason: state.viewedSeason,
       viewedWorksheetNumber: state.viewedWorksheetNumber,
       isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
@@ -125,6 +130,7 @@ function WorksheetCalendarList({
       viewedPerson: state.viewedPerson,
       worksheets: state.worksheets,
       user: state.user,
+      colorThemes: state.colorThemes,
     })),
   );
 
@@ -164,10 +170,21 @@ function WorksheetCalendarList({
 
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   const [privateState, setPrivateState] = useState(isViewedWorksheetPrivate);
+  // Only your own worksheets have it, and the main one only once it has a
+  // class (that's when it's saved)
+  const viewedWorksheet = worksheets
+    ?.get(viewedSeason)
+    ?.get(viewedWorksheetNumber);
+  const savedLockCustomColors = viewedWorksheet?.lockCustomColors ?? false;
+  const [lockState, setLockState] = useState(savedLockCustomColors);
   const [updatingWSState, setUpdatingWSState] = useState(false);
 
   const [clearModalOpen, setClearModalOpen] = useState(false);
   const [clearing, setClearing] = useState(false);
+
+  const [resetColorsModalOpen, setResetColorsModalOpen] = useState(false);
+  const [resettingColors, setResettingColors] = useState(false);
+  const classicTheme = colorThemes?.find((theme) => theme.isDefault);
 
   useEffect(() => {
     setPrivateState(isViewedWorksheetPrivate);
@@ -214,6 +231,34 @@ function WorksheetCalendarList({
       );
     } finally {
       setClearing(false);
+    }
+  };
+
+  const handleResetColors = async () => {
+    if (!classicTheme) return;
+    const reset = applyTheme(courses, classicTheme, savedLockCustomColors);
+    const changed = reset.flatMap(({ crn, color, colorIndex }, i) =>
+      color === courses[i]!.color && colorIndex === courses[i]!.colorIndex
+        ? []
+        : { crn, color, colorIndex },
+    );
+
+    setResettingColors(true);
+    try {
+      // Saves the theme and colors together
+      const saved = await updateWorksheetMetadata({
+        action: 'setColorTheme',
+        season: viewedSeason,
+        worksheetNumber: viewedWorksheetNumber,
+        colorThemeId: classicTheme.id,
+        courses: changed,
+      });
+      if (!saved) return;
+      await worksheetsRefresh();
+      setResetColorsModalOpen(false);
+      toast.success('Reset colors to Classic');
+    } finally {
+      setResettingColors(false);
     }
   };
 
@@ -273,6 +318,7 @@ function WorksheetCalendarList({
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
+                      setLockState(savedLockCustomColors);
                       setSettingsModalOpen(true);
                     }}
                     variant="none"
@@ -468,6 +514,7 @@ function WorksheetCalendarList({
                 <WorksheetCalendarListItem
                   key={viewedSeason + course.crn}
                   listing={course.listing}
+                  color={course.color}
                   hidden={course.hidden ?? false}
                 />
               ))}
@@ -534,9 +581,44 @@ function WorksheetCalendarList({
                 }
               />
             )}
+            {viewedWorksheet && (
+              <Form.Check
+                type="switch"
+                id="lock-custom-colors-switch"
+                className="mt-3"
+                label={
+                  <>
+                    Lock custom colors
+                    <p className="text-muted small mb-0">
+                      Changing or editing themes won't recolor classes with
+                      custom colors
+                    </p>
+                  </>
+                }
+                checked={lockState}
+                onChange={(event) => setLockState(event.currentTarget.checked)}
+              />
+            )}
 
-            {courses.length > 0 && (
+            {courses.length > 0 && classicTheme && (
               <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setResetColorsModalOpen(true)}
+                  disabled={resettingColors}
+                  className={styles.clearAllButton}
+                >
+                  <strong>Reset Colors</strong>
+                  <p className="text-muted small mb-0">
+                    {savedLockCustomColors
+                      ? 'Switch this worksheet to Classic, except custom colors'
+                      : 'Switch this worksheet and all its classes to Classic'}
+                  </p>
+                </button>
+              </div>
+            )}
+            {courses.length > 0 && (
+              <div className="mt-2">
                 <button
                   type="button"
                   onClick={() => setClearModalOpen(true)}
@@ -559,28 +641,38 @@ function WorksheetCalendarList({
           <Button
             variant="secondary"
             onClick={() => {
-              if (privateState !== isViewedWorksheetPrivate) {
-                setUpdatingWSState(true);
-                (async () => {
+              setUpdatingWSState(true);
+              (async () => {
+                if (privateState !== isViewedWorksheetPrivate) {
                   await updateWorksheetMetadata({
                     season: viewedSeason,
                     action: 'setPrivate',
                     worksheetNumber: viewedWorksheetNumber,
                     private: privateState,
                   });
-                  await worksheetsRefresh();
-                })()
-                  .then(() => {
-                    setUpdatingWSState(false);
-                    setSettingsModalOpen(false);
-                  })
-                  .catch(() => {
-                    setUpdatingWSState(false);
+                }
+                if (lockState !== savedLockCustomColors) {
+                  await updateWorksheetMetadata({
+                    season: viewedSeason,
+                    action: 'setLockCustomColors',
+                    worksheetNumber: viewedWorksheetNumber,
+                    lockCustomColors: lockState,
                   });
-              }
+                }
+                await worksheetsRefresh();
+              })()
+                .then(() => {
+                  setUpdatingWSState(false);
+                  setSettingsModalOpen(false);
+                })
+                .catch(() => {
+                  setUpdatingWSState(false);
+                });
             }}
             disabled={
-              privateState === isViewedWorksheetPrivate || updatingWSState
+              (privateState === isViewedWorksheetPrivate &&
+                lockState === savedLockCustomColors) ||
+              updatingWSState
             }
             style={{ minWidth: '4rem' }}
           >
@@ -590,6 +682,50 @@ function WorksheetCalendarList({
               </div>
             ) : (
               'Save'
+            )}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={resetColorsModalOpen}
+        onHide={() => !resettingColors && setResetColorsModalOpen(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reset Colors</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <p>
+            Switch this worksheet to the <strong>Classic</strong> theme?{' '}
+            {savedLockCustomColors
+              ? 'Classes with custom colors keep them, since they’re locked.'
+              : 'Every class, including ones with custom colors, will get a Classic color.'}
+          </p>
+          <p className="text-muted small mb-0">This action cannot be undone.</p>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setResetColorsModalOpen(false)}
+            disabled={resettingColors}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={handleResetColors}
+            disabled={resettingColors}
+            style={{ minWidth: '4rem' }}
+          >
+            {resettingColors ? (
+              <div className="ms-auto">
+                <Spinner size="sm" />
+              </div>
+            ) : (
+              'Reset'
             )}
           </Button>
         </Modal.Footer>

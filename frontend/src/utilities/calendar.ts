@@ -372,6 +372,39 @@ export function getCalendarEvents(
   return events;
 }
 
+/**
+ * A single calendar block for previewing a course (Ex. color picker preview).
+ * Uses the course's first real meeting when it has one, otherwise a 9–10:15am
+ * placeholder so courses without meeting times can still be previewed.
+ */
+export function getPreviewCalendarEvent(
+  listing: CatalogListing,
+  color: string,
+  season: Season,
+): CourseRBCEvent {
+  // Hidden courses are skipped by getCalendarEvents, so force visible here
+  const [event] = getCalendarEvents(
+    'rbc',
+    [{ crn: listing.crn, color, colorIndex: null, listing, hidden: false }],
+    season,
+  );
+  if (event) return event;
+  const start = new Date();
+  start.setHours(9, 0, 0, 0);
+  const end = new Date(start);
+  end.setHours(10, 15);
+  return {
+    kind: 'course',
+    title: listing.course_code,
+    description: listing.course.title,
+    start,
+    end,
+    listing,
+    color,
+    location: '',
+  };
+}
+
 function formatTime(a: Date) {
   const hours = a.getHours();
   const minutes = a.getMinutes();

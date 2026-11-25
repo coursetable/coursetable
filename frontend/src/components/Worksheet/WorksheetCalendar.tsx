@@ -20,6 +20,7 @@ import {
   ColorPickerModal,
   WorksheetMoveModal,
 } from './WorksheetItemActionsButton';
+import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import { useStore } from '../../store';
 import {
   localizer,
@@ -177,8 +178,9 @@ function WorksheetCalendar({
   onEditCommitment,
 }: WorksheetCalendarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
+  // Shows the color picker's unsaved changes
+  const { courses } = useColorPickerPreview();
   const {
-    courses,
     viewedSeason,
     setOpenColorPickerEvent,
     setOpenWorksheetMoveEvent,
@@ -188,7 +190,6 @@ function WorksheetCalendar({
     personalBlocks,
   } = useStore(
     useShallow((state) => ({
-      courses: state.courses,
       viewedSeason: state.viewedSeason,
       setOpenColorPickerEvent: state.setOpenColorPickerEvent,
       setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,

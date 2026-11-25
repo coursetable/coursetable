@@ -14,6 +14,8 @@ import {
   type FriendRecord,
   type FriendRequests,
   fetchUserWishlist,
+  fetchColorThemes,
+  type ColorTheme,
 } from '../queries/api';
 import type { NetId } from '../queries/graphql-types';
 import type { Store } from '../store';
@@ -25,12 +27,14 @@ interface UserState {
   friendRequests?: FriendRequests;
   friends?: FriendRecord;
   sameCourseIdToCrns?: { [key: string]: number[] };
+  colorThemes?: ColorTheme[];
 }
 
 interface UserActions {
   userRefresh: () => Promise<void>;
   worksheetsRefresh: () => Promise<void>;
   wishlistRefresh: () => Promise<void>;
+  colorThemesRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
   addFriend: (friendNetId: NetId) => Promise<void>;
@@ -50,6 +54,7 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   friendRequests: undefined,
   friends: undefined,
   sameCourseIdToCrns: undefined,
+  colorThemes: undefined,
   async userRefresh() {
     const data = await getUserInfo();
     set({ user: data });
@@ -61,6 +66,10 @@ export const createUserSlice: StateCreator<Store, [], [], UserSlice> = (
   async wishlistRefresh() {
     const res = await fetchUserWishlist();
     set({ wishlist: res?.data });
+  },
+  async colorThemesRefresh() {
+    const res = await fetchColorThemes();
+    set({ colorThemes: res?.data });
   },
   async friendRefresh() {
     const data = await fetchFriendWorksheets();

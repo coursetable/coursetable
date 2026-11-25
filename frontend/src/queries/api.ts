@@ -228,11 +228,13 @@ type UpdateWorksheetCourseAction = {
   | {
       action: 'add';
       color: string;
+      colorIndex: number | null;
       hidden: boolean;
     }
   | {
       action: 'remove' | 'update';
       color?: string;
+      colorIndex?: number | null;
       hidden?: boolean;
     }
 );
@@ -377,6 +379,18 @@ export async function updateWorksheetMetadata(
         worksheetNumber: number;
         private: boolean;
       }
+    | {
+        action: 'setLockCustomColors';
+        worksheetNumber: number;
+        lockCustomColors: boolean;
+      }
+    | {
+        action: 'setColorTheme';
+        worksheetNumber: number;
+        colorThemeId: number;
+        // Recolored for the new theme; saved together with it
+        courses: { crn: Crn; color: string; colorIndex: number | null }[];
+      }
   ),
 ): Promise<boolean> {
   return await fetchAPI('/user/updateWorksheetMetadata', {
@@ -389,6 +403,9 @@ export async function updateWorksheetMetadata(
       switch (err) {
         case 'WORKSHEET_NOT_FOUND':
           toast.error('Worksheet not found.');
+          return true;
+        case 'THEME_NOT_FOUND':
+          toast.error('Theme not found.');
           return true;
         default:
           return false;
@@ -789,6 +806,8 @@ export function searchProfiles(query: string, limit = 20) {
 const worksheetCourseSchema = z.object({
   crn: crnSchema,
   color: z.string(),
+  // Friends' worksheets don't include this
+  colorIndex: z.number().nullable().optional(),
   hidden: z.boolean().nullable(),
   sameCourseId: z.number().nullable().optional(),
 });
@@ -798,6 +817,10 @@ const worksheetSchema = z.object({
   personalBlocks: personalBlocksSchema.optional(),
   name: z.string(),
   private: z.boolean().optional(),
+  // Friends' worksheets don't include this
+  lockCustomColors: z.boolean().optional(),
+  // Null means the user's default theme. Friends' worksheets don't include it
+  colorThemeId: z.number().nullable().optional(),
   courses: z.array(worksheetCourseSchema),
 });
 
@@ -1125,5 +1148,79 @@ export async function deleteSavedSearch(id: number) {
           return false;
       }
     },
+  });
+}
+
+const colorThemeSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  colors: z.array(z.string()),
+  // Classic, which can't be edited or deleted
+  isDefault: z.boolean(),
+});
+
+export type ColorTheme = z.infer<typeof colorThemeSchema>;
+
+function handleColorThemeError(err: string) {
+  switch (err) {
+    case 'TOO_MANY_THEMES':
+      toast.error('You can have up to 32 themes');
+      return true;
+    case 'THEME_NOT_FOUND':
+      toast.error('Theme not found');
+      return true;
+    default:
+      return false;
+  }
+}
+
+export async function fetchColorThemes() {
+  return await fetchAPI(`/colorThemes?_=${Date.now()}`, {
+    schema: z.object({ data: z.array(colorThemeSchema) }),
+    breadcrumb: {
+      category: 'colorThemes',
+      message: 'Fetching color themes',
+    },
+  });
+}
+
+export async function createColorTheme(name: string, colors: string[]) {
+  return await fetchAPI('/colorThemes/create', {
+    body: { name, colors },
+    schema: colorThemeSchema,
+    breadcrumb: {
+      category: 'colorThemes',
+      message: 'Creating color theme',
+    },
+    handleErrorCode: handleColorThemeError,
+  });
+}
+
+export async function updateColorTheme(
+  id: number,
+  name: string,
+  colors: string[],
+) {
+  return await fetchAPI('/colorThemes/update', {
+    body: { id, name, colors },
+    schema: colorThemeSchema,
+    breadcrumb: {
+      category: 'colorThemes',
+      message: 'Updating color theme',
+    },
+    handleErrorCode: handleColorThemeError,
+  });
+}
+
+// `keepColors`: whether worksheets using the theme keep their courses' current
+// colors, instead of switching them to the default theme's
+export async function deleteColorTheme(id: number, keepColors: boolean) {
+  return await fetchAPI('/colorThemes/delete', {
+    body: { id, keepColors },
+    breadcrumb: {
+      category: 'colorThemes',
+      message: 'Deleting color theme',
+    },
+    handleErrorCode: handleColorThemeError,
   });
 }

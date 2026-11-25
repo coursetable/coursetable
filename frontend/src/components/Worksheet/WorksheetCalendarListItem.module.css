@@ -10,6 +10,63 @@
     color var(--trans-dur);
 }
 
+.colorTab {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+/* The visible color; bulges out on hover without affecting layout */
+.colorTab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background-color: var(--course-color);
+  transition:
+    width 0.1s ease,
+    border-radius 0.1s ease,
+    opacity var(--trans-dur);
+}
+
+.listItemHidden .colorTab::before {
+  opacity: 0.3;
+}
+
+/* Wider invisible hit area so the thin sliver is easy to target */
+.colorTabEditable {
+  width: 10px;
+  cursor: pointer;
+}
+
+.colorTabEditable:hover::before,
+.colorTabEditable:focus-visible::before {
+  width: 12px;
+
+  /* Elliptical right edge spanning the full height: a gentle bulge */
+  border-radius: 0 100% 100% 0 / 0 50% 50% 0;
+  opacity: 1;
+  box-shadow: 1px 0 3px rgb(0 0 0 / 25%);
+}
+
+.colorTabEditable:focus-visible {
+  outline: none;
+}
+
+/* Let the cursor pass through so leaving the bulge also leaves the list item
+   (otherwise the item's mouseleave never fires and the hover highlight sticks) */
+.colorTabTooltip {
+  pointer-events: none;
+}
+
 .listItem:hover {
   background-color: var(--color-primary-subdued);
 }
