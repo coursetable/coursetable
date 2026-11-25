@@ -1,5 +1,6 @@
 import type express from 'express';
 import LZString from 'lz-string';
+import { renderCoursePreviewImage } from './link-preview.image.js';
 import { getSdk } from './link-preview.queries.js';
 import { graphqlClient } from '../config.js';
 import winston from '../logging/winston.js';
@@ -23,7 +24,15 @@ const html = (strings: TemplateStringsArray, ...values: unknown[]): string =>
     '',
   );
 
-const defaultMetadata = {
+type Metadata = {
+  title: string;
+  description: string;
+  image: string;
+  // Whether the image is a wide card rather than a small logo
+  largeImage?: boolean;
+};
+
+const defaultMetadata: Metadata = {
   title: 'CourseTable',
   description:
     'CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It is run by a small team of volunteers within the Yale Computer Society and is completely open source.',
@@ -34,12 +43,8 @@ function renderTemplate({
   title,
   description,
   image,
-}: {
-  title: string;
-  description: string;
-  image: string;
-}): string {
-  // TODO: use summary_large_image for Twitter cards once we have images
+  largeImage,
+}: Metadata): string {
   return html`
     <!doctype html>
     <html lang="en">
@@ -53,7 +58,10 @@ function renderTemplate({
         <meta name="og:locale" content="en" />
         <meta name="og:image" content="${image}" />
         <meta name="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
+        <meta
+          name="twitter:card"
+          content="${largeImage ? 'summary_large_image' : 'summary'}"
+        />
         <meta name="twitter:image" content="${image}" />
       </head>
       <body>
@@ -64,17 +72,25 @@ function renderTemplate({
   `;
 }
 
-async function getCourseMetadata(query: unknown) {
-  if (!/^\d{6}-\d{5}$/u.test(String(query))) return defaultMetadata;
+// The course-modal query looks like 202403-10471 (season code-CRN)
+async function fetchListing(query: unknown) {
+  if (!/^\d{6}-\d{5}$/u.test(String(query))) return null;
   const [seasonCode, crn] = String(query).split('-');
-  if (!seasonCode || !crn) return defaultMetadata;
+  if (!seasonCode || !crn) return null;
   const data = await getSdk(graphqlClient).courseMetadata({
     listingId:
       (Number.parseInt(seasonCode, 10) - 200000) * 100000 +
       Number.parseInt(crn, 10),
   });
-  if (!data.listings_by_pk) return defaultMetadata;
-  const listing = data.listings_by_pk;
+  return data.listings_by_pk;
+}
+
+async function getCourseMetadata(
+  query: unknown,
+  origin: string,
+): Promise<Metadata> {
+  const listing = await fetchListing(query);
+  if (!listing) return defaultMetadata;
   return {
     title: `${listing.course_code} ${listing.section.padStart(2, '0')} ${listing.course.title} | CourseTable`,
     description: truncatedText(
@@ -82,7 +98,8 @@ async function getCourseMetadata(query: unknown) {
       300,
       'No description available',
     ),
-    image: 'https://coursetable.com/favicon.png',
+    image: `${origin}/api/link-preview/image?course-modal=${encodeURIComponent(String(query))}`,
+    largeImage: true,
   };
 }
 
@@ -125,7 +142,7 @@ function getWorksheetMetadata(url: string) {
   }
 }
 
-function getPageMetadata(url: string) {
+function getPageMetadata(url: string): Metadata {
   // Check if it's a worksheet URL first
   const worksheetMetadata = getWorksheetMetadata(url);
   if (worksheetMetadata) return worksheetMetadata;
@@ -175,14 +192,71 @@ export async function generateLinkPreview(
     `Generating link preview for ${String(req.query['course-modal']?.toString() ?? req.query.url?.toString() ?? 'unknown')}, request by ${req.headers['user-agent'] ?? 'unknown'}`,
   );
   let metadata = defaultMetadata;
-  if (req.query.url) metadata = getPageMetadata(req.query.url as string);
-  else if (req.query['course-modal'])
-    metadata = await getCourseMetadata(req.query['course-modal']);
+  if (req.query.url) {
+    metadata = getPageMetadata(req.query.url as string);
+  } else if (req.query['course-modal']) {
+    metadata = await getCourseMetadata(
+      req.query['course-modal'],
+      // The image is served by this same API
+      `${req.protocol}://${req.get('host') ?? 'api.coursetable.com'}`,
+    );
+  }
   winston.info(`Generated link preview for ${metadata.title}`);
 
   res
     .header('Content-Type', 'text/html; charset=utf-8')
     .send(renderTemplate(metadata));
+}
+
+// Rendered images by course-modal value. Bounded so it can't grow without
+// limit, expiring with the same lifetime as the Cache-Control header, and
+// storing the promise so concurrent requests for a course share one render.
+const IMAGE_CACHE_MAX_ENTRIES = 200;
+const IMAGE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const imageCache = new Map<
+  string,
+  { expiresAt: number; image: Promise<Buffer | null> }
+>();
+
+function getCoursePreviewImage(query: string): Promise<Buffer | null> {
+  const cached = imageCache.get(query);
+  if (cached && cached.expiresAt > Date.now()) return cached.image;
+  imageCache.delete(query);
+
+  const image = fetchListing(query).then((listing) =>
+    listing ? renderCoursePreviewImage(listing) : null,
+  );
+  imageCache.set(query, { expiresAt: Date.now() + IMAGE_CACHE_TTL_MS, image });
+  // Maps iterate in insertion order, so the first key is the oldest entry
+  if (imageCache.size > IMAGE_CACHE_MAX_ENTRIES)
+    imageCache.delete(imageCache.keys().next().value!);
+
+  // Only keep successful renders; unknown courses and failures are retried
+  const evict = () => {
+    if (imageCache.get(query)?.image === image) imageCache.delete(query);
+  };
+  image.then((png) => {
+    if (!png) evict();
+  }, evict);
+  return image;
+}
+
+export async function generateLinkPreviewImage(
+  req: express.Request,
+  res: express.Response,
+): Promise<void> {
+  const query = req.query['course-modal'];
+  const image =
+    typeof query === 'string' ? await getCoursePreviewImage(query) : null;
+  if (!image) {
+    res.status(404).send('Course not found');
+    return;
+  }
+  res
+    .header('Content-Type', 'image/png')
+    // Crawlers cache previews anyway, and course info rarely changes
+    .header('Cache-Control', 'public, max-age=86400')
+    .send(image);
 }
 
 function truncatedText(
