@@ -23,7 +23,7 @@ function ToolbarButton({
       type="button"
       className={clsx(
         'btn btn-sm',
-        pressed ? 'btn-primary' : 'btn-link text-body-secondary',
+        pressed ? 'btn-primary' : 'btn-none text-body-secondary',
         styles.btn,
       )}
       aria-label={label}
