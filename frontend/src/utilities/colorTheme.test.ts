@@ -2,9 +2,9 @@ import { describe, expect, it } from 'vitest';
 
 import {
   applyColorDraft,
+  applyTheme,
   fallbackTheme,
   getWorksheetTheme,
-  resetCourseColors,
 } from './colorTheme';
 import type { ColorTheme } from '../queries/api';
 import type { Crn } from '../queries/graphql-types';
@@ -37,55 +37,53 @@ describe('getWorksheetTheme', () => {
   });
 });
 
+describe('applyTheme', () => {
+  it('recolors every course, giving custom colors a stable slot', () => {
+    const courses = [
+      { crn: crn(1), color: '#000004', colorIndex: 4 },
+      { crn: crn(27), color: '#123456', colorIndex: null },
+    ];
+    expect(applyTheme(courses, next)).toEqual([
+      { crn: crn(1), color: next.colors[4], colorIndex: 4 },
+      { crn: crn(27), color: next.colors[7], colorIndex: 7 },
+    ]);
+    expect(applyTheme(courses, next)).toEqual(applyTheme(courses, next));
+  });
+});
+
 describe('applyColorDraft', () => {
   const courses = [
     { crn: crn(1), color: '#000003', colorIndex: 3 },
     { crn: crn(2), color: '#123456', colorIndex: null },
   ];
 
-  it('moves theme colors to the new theme, keeping their slot', () => {
+  it('recolors every course when the theme changes', () => {
     expect(applyColorDraft(courses, crn(1), undefined, next, true)).toEqual([
       { crn: crn(1), color: next.colors[3], colorIndex: 3 },
+      { crn: crn(2), color: next.colors[2], colorIndex: 2 },
+    ]);
+  });
+
+  it('only changes the picked course when the theme is unchanged', () => {
+    expect(
+      applyColorDraft(
+        courses,
+        crn(1),
+        { color: '#ffff01', colorIndex: 1 },
+        next,
+        false,
+      ),
+    ).toEqual([
+      { crn: crn(1), color: next.colors[1], colorIndex: 1 },
       courses[1],
     ]);
   });
 
-  it('leaves other courses alone when the theme is unchanged', () => {
-    const [picked, other] = applyColorDraft(
-      [courses[0]!, { crn: crn(3), color: '#000005', colorIndex: 5 }],
-      crn(1),
-      { color: '#ffff01', colorIndex: 1 },
-      next,
-      false,
-    );
-    expect(picked).toEqual({
-      crn: crn(1),
-      color: next.colors[1],
-      colorIndex: 1,
-    });
-    expect(other!.color).toBe('#000005');
-  });
-
-  it('keeps a picked custom color', () => {
+  it('keeps a custom color picked after switching themes', () => {
     const picked = { color: '#abcdef', colorIndex: null };
     expect(applyColorDraft(courses, crn(1), picked, next, true)[0]).toEqual({
       crn: crn(1),
       ...picked,
     });
-  });
-});
-
-describe('resetCourseColors', () => {
-  it('keeps slots and moves custom colors onto the theme', () => {
-    const [kept, custom] = resetCourseColors(
-      [
-        { color: '#aaaaaa', colorIndex: 4 },
-        { color: '#123456', colorIndex: null },
-      ],
-      next,
-    );
-    expect(kept).toEqual({ color: next.colors[4], colorIndex: 4 });
-    expect(custom!.colorIndex).not.toBeNull();
-    expect(custom!.color).toBe(next.colors[custom!.colorIndex!]);
   });
 });

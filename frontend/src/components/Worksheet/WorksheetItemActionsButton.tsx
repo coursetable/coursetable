@@ -250,7 +250,17 @@ export function ColorPickerModal({
         <ThemePanel
           themes={colorThemes ?? [fallbackTheme]}
           selectedTheme={theme}
-          onSelect={(themeId) => updateColorPickerDraft({ themeId })}
+          // A new theme recolors every course, so a custom color picked
+          // before it is dropped too
+          onSelect={(themeId) =>
+            updateColorPickerDraft({
+              themeId,
+              picked:
+                preview.picked?.colorIndex === null
+                  ? undefined
+                  : preview.picked,
+            })
+          }
           onClose={() => setThemePanelOpen(false)}
         />
       )}
@@ -743,7 +753,7 @@ function ThemeEditor({
               <p>
                 {keepColors
                   ? 'Courses will keep their current colors.'
-                  : 'Courses will switch to Classic colors, except custom ones.'}
+                  : 'All courses will switch to Classic colors.'}
               </p>
               <Form.Check
                 type="switch"

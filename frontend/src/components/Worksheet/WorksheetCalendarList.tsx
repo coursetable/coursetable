@@ -38,7 +38,7 @@ import {
   type WorksheetCourse,
 } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
-import { resetCourseColors } from '../../utilities/colorTheme';
+import { applyTheme } from '../../utilities/colorTheme';
 import NoCourses from '../Search/NoCourses';
 import { SurfaceComponent } from '../Typography';
 import styles from './WorksheetCalendarList.module.css';
@@ -229,7 +229,7 @@ function WorksheetCalendarList({
 
   const handleResetColors = async () => {
     if (!classicTheme) return;
-    const reset = resetCourseColors(courses, classicTheme);
+    const reset = applyTheme(courses, classicTheme);
     const changed = reset.flatMap(({ crn, color, colorIndex }, i) =>
       color === courses[i]!.color && colorIndex === courses[i]!.colorIndex
         ? []
@@ -584,7 +584,7 @@ function WorksheetCalendarList({
                 >
                   <strong>Reset Colors</strong>
                   <p className="text-muted small mb-0">
-                    Switch this worksheet to Classic and replace custom colors
+                    Switch this worksheet and all its classes to Classic
                   </p>
                 </button>
               </div>
@@ -660,8 +660,8 @@ function WorksheetCalendarList({
 
         <Modal.Body>
           <p>
-            Switch this worksheet to the <strong>Classic</strong> theme? Classes
-            with custom colors will get a Classic color instead.
+            Switch this worksheet to the <strong>Classic</strong> theme? Every
+            class, including ones with custom colors, will get a Classic color.
           </p>
           <p className="text-muted small mb-0">This action cannot be undone.</p>
         </Modal.Body>

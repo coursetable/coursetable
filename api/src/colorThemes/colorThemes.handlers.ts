@@ -1,5 +1,5 @@
 import type express from 'express';
-import { and, asc, count, eq, inArray } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, isNull, sql } from 'drizzle-orm';
 import z from 'zod';
 
 import { ensureColorThemesSeeded } from './colorThemes.utils.js';
@@ -27,7 +27,7 @@ const UpdateThemeSchema = ThemeBodySchema.extend({
 const DeleteThemeSchema = z.object({
   id: z.number().int().positive(),
   // Whether worksheets using the theme keep their courses' current colors,
-  // instead of switching them to the default theme's
+  // instead of switching them all to the default theme's
   keepColors: z.boolean(),
 });
 
@@ -158,8 +158,12 @@ export const deleteColorTheme = async (
         .set({ colorIndex: null })
         .where(inAffectedWorksheet);
     } else {
-      // Theme colors take the default theme's color for their slot; custom
-      // colors weren't from the theme, so they stay
+      // Every course takes a default theme color. Custom colors first get a
+      // slot, picked by CRN like the frontend does so previews match.
+      await tx
+        .update(worksheetCourses)
+        .set({ colorIndex: sql`${worksheetCourses.crn} % 10` })
+        .where(and(inAffectedWorksheet, isNull(worksheetCourses.colorIndex)));
       const fallback = await tx.query.colorThemes.findFirst({
         where: and(
           eq(colorThemes.netId, netId),

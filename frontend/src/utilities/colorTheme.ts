@@ -31,10 +31,24 @@ export function randomThemeColor(theme: ColorTheme) {
 export type CourseColor = { color: string; colorIndex: number | null };
 
 /**
- * Courses as the color picker would save them: the picked course gets its new
- * color, and courses using a theme color take the theme's color for their
- * slot. Only the picked course follows the theme unless it changed, so a
- * stored color is never rewritten for no reason. Custom colors are left alone.
+ * Gives every course the theme's color for its slot. A custom color gets a
+ * slot picked by CRN: arbitrary, but stable, so previews don't reshuffle on
+ * every change. The API picks the same way.
+ */
+export function applyTheme<T extends CourseColor & { crn: Crn }>(
+  courses: readonly T[],
+  theme: ColorTheme,
+): T[] {
+  return courses.map((course) => {
+    const colorIndex = course.colorIndex ?? course.crn % theme.colors.length;
+    return { ...course, color: theme.colors[colorIndex]!, colorIndex };
+  });
+}
+
+/**
+ * Courses as the color picker would save them. Changing the theme recolors
+ * every course; otherwise only the picked course changes, so a stored color is
+ * never rewritten for no reason.
  */
 export function applyColorDraft<T extends CourseColor & { crn: Crn }>(
   courses: readonly T[],
@@ -43,24 +57,14 @@ export function applyColorDraft<T extends CourseColor & { crn: Crn }>(
   theme: ColorTheme,
   themeChanged: boolean,
 ): T[] {
-  return courses.map((course) => {
-    const isPicked = course.crn === crn && picked !== undefined;
-    const next = isPicked ? { ...course, ...picked } : course;
-    if (next.colorIndex === null || !(isPicked || themeChanged)) return next;
-    return { ...next, color: theme.colors[next.colorIndex]! };
+  const recolored = themeChanged ? applyTheme(courses, theme) : courses;
+  return recolored.map((course) => {
+    if (course.crn !== crn || !picked) return course;
+    // A preset follows the theme; a custom color stays as picked
+    const color =
+      picked.colorIndex === null
+        ? picked.color
+        : theme.colors[picked.colorIndex]!;
+    return { ...course, color, colorIndex: picked.colorIndex };
   });
-}
-
-// Puts every course on the theme: courses keep their slot, and custom colors
-// get a random one, like a newly added course
-export function resetCourseColors<T extends CourseColor>(
-  courses: readonly T[],
-  theme: ColorTheme,
-): T[] {
-  return courses.map((course) => ({
-    ...course,
-    ...(course.colorIndex === null
-      ? randomThemeColor(theme)
-      : { color: theme.colors[course.colorIndex]! }),
-  }));
 }
