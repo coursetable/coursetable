@@ -118,7 +118,7 @@ function ResultsGridItem({
       >
         <div className="d-flex justify-content-between">
           <div className={styles.courseCodes}>
-            <CourseCode listing={listing} subdueSection={false} />
+            <CourseCode listing={listing} subdueSection={false} showFullBadge />
           </div>
           {multiSeasons && (
             <SeasonTag

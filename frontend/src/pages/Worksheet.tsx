@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as Sentry from '@sentry/react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import {
   FaLock,
   FaUnlock,
@@ -16,6 +16,7 @@ import Spinner from '../components/Spinner';
 import { SurfaceComponent } from '../components/Typography';
 import CalendarLockSettingsModal from '../components/Worksheet/CalendarLockSettingsModal';
 import FriendsDropdown from '../components/Worksheet/FriendsDropdown';
+import PersonalBlockModal from '../components/Worksheet/PersonalBlockModal';
 import SeasonDropdown from '../components/Worksheet/SeasonDropdown';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
@@ -26,6 +27,7 @@ import WorksheetStats from '../components/Worksheet/WorksheetStats';
 
 import { parseCoursesFromURL } from '../slices/WorksheetSlice';
 import { useStore } from '../store';
+import type { PersonalBlock } from '../utilities/personalBlock';
 import styles from './Worksheet.module.css';
 
 const SHOW_WALKING_TIMES_STORAGE_KEY = 'worksheet-calendar-show-walking-times';
@@ -41,6 +43,12 @@ function Worksheet() {
     isCalendarViewLocked,
     setCalendarViewLocked,
     setCalendarLockSettingsOpen,
+    isReadonlyWorksheet,
+    personalBlocks,
+    viewedSeason,
+    worksheetNumber,
+    viewedPerson,
+    user,
   } = useStore(
     useShallow((state) => ({
       isMobile: state.isMobile,
@@ -52,9 +60,32 @@ function Worksheet() {
       isCalendarViewLocked: state.isCalendarViewLocked,
       setCalendarViewLocked: state.setCalendarViewLocked,
       setCalendarLockSettingsOpen: state.setCalendarLockSettingsOpen,
+      isReadonlyWorksheet: state.worksheetMemo.getIsReadonlyWorksheet(state),
+      personalBlocks: state.worksheetMemo.getIsReadonlyWorksheet(state)
+        ? undefined
+        : state.worksheetMemo
+            .getCurWorksheet(state)
+            .get(state.viewedSeason)
+            ?.get(state.viewedWorksheetNumber)?.personalBlocks,
+      viewedSeason: state.viewedSeason,
+      worksheetNumber: state.viewedWorksheetNumber,
+      viewedPerson: state.viewedPerson,
+      user: state.user,
     })),
   );
   const [expanded, setExpanded] = useState(false);
+  const worksheetKey = [
+    user?.netId,
+    viewedPerson,
+    viewedSeason,
+    worksheetNumber,
+    isReadonlyWorksheet,
+  ].join(':');
+  const [editor, setEditor] = useState<{
+    worksheetKey: string;
+    block?: PersonalBlock;
+  } | null>(null);
+  const canEditCommitments = Boolean(user) && !isReadonlyWorksheet;
   const [showWalkingTimes, setShowWalkingTimes] = useState(() => {
     if (typeof window === 'undefined') return true;
     const savedPreference = window.localStorage.getItem(
@@ -126,7 +157,14 @@ function Worksheet() {
         </div>
       )}
       <SurfaceComponent className={styles.calendar}>
-        <WorksheetCalendar showWalkingTimes={showWalkingTimes} />
+        <WorksheetCalendar
+          showWalkingTimes={showWalkingTimes}
+          onEditCommitment={
+            canEditCommitments
+              ? (block) => setEditor({ worksheetKey, block })
+              : undefined
+          }
+        />
         {!isMobile && (
           <div className={styles.calendarControls}>
             <OverlayTrigger
@@ -185,7 +223,22 @@ function Worksheet() {
             showWalkingTimes={showWalkingTimes}
             onShowWalkingTimesChange={setShowWalkingTimes}
           />
+          {canEditCommitments && (
+            <Button onClick={() => setEditor({ worksheetKey })}>
+              Add commitment
+            </Button>
+          )}
         </div>
+      )}
+      {editor?.worksheetKey === worksheetKey && canEditCommitments && (
+        <PersonalBlockModal
+          key={`${worksheetKey}-${editor.block?.id ?? 'new'}`}
+          block={editor.block}
+          blocks={personalBlocks ?? []}
+          season={viewedSeason}
+          worksheetNumber={worksheetNumber}
+          onClose={() => setEditor(null)}
+        />
       )}
       <CalendarLockSettingsModal />
     </div>

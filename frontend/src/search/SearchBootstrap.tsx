@@ -33,6 +33,7 @@ import { weekdays } from '../utilities/constants';
 import {
   isInWorksheet,
   checkConflict,
+  getPersonalBlockConflicts,
   getEnrolled,
   getNumFriends,
   getOverallRatings,
@@ -40,6 +41,7 @@ import {
   getProfessorRatings,
   isGraduate,
   isDiscussionSection,
+  isSectionFull,
   sortCourses,
   toLocationsSummary,
   toRangeTime,
@@ -277,6 +279,7 @@ export function SearchBootstrap({
   const searchDescription = useFilterState('searchDescription');
   const enableQuist = useFilterState('enableQuist');
   const hideCancelled = useFilterState('hideCancelled');
+  const hideFull = useFilterState('hideFull');
   const hideConflicting = useFilterState('hideConflicting');
   const includeAttributes = useFilterState('includeAttributes');
   const excludeAttributes = useFilterState('excludeAttributes');
@@ -393,7 +396,15 @@ export function SearchBootstrap({
                 getRelevantWorksheetNumber(listing.course.season_code),
                 worksheets,
               ) &&
-              checkConflict(worksheetInfo, listing).length > 0
+              (checkConflict(worksheetInfo, listing).length > 0 ||
+                getPersonalBlockConflicts(
+                  worksheets
+                    ?.get(listing.course.season_code)
+                    ?.get(
+                      getRelevantWorksheetNumber(listing.course.season_code),
+                    )?.personalBlocks,
+                  listing,
+                ).length > 0)
             );
           case 'grad':
             return isGraduate(listing);
@@ -558,6 +569,8 @@ export function SearchBootstrap({
         if (hideCancelled.value && listing.course.extra_info !== 'ACTIVE')
           return false;
 
+        if (hideFull.value && isSectionFull(listing)) return false;
+
         if (
           hideConflicting.value &&
           listing.course.course_meetings.length > 0 &&
@@ -566,7 +579,14 @@ export function SearchBootstrap({
             getRelevantWorksheetNumber(listing.course.season_code),
             worksheets,
           ) &&
-          checkConflict(worksheetInfo, listing).length > 0
+          (checkConflict(worksheetInfo, listing).length > 0 ||
+            getPersonalBlockConflicts(
+              worksheets
+                ?.get(listing.course.season_code)
+                ?.get(getRelevantWorksheetNumber(listing.course.season_code))
+                ?.personalBlocks,
+              listing,
+            ).length > 0)
         )
           return false;
 
@@ -709,6 +729,7 @@ export function SearchBootstrap({
       enrollBounds,
       numBounds,
       hideCancelled.value,
+      hideFull.value,
       hideConflicting.value,
       getRelevantWorksheetNumber,
       worksheets,

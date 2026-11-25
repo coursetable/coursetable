@@ -2,7 +2,8 @@ import { DateLocalizer, type DateLocalizerSpec } from 'react-big-calendar';
 import { toast } from 'sonner';
 import { v4 as uuidv4 } from 'uuid';
 import { weekdays } from './constants';
-import { toSeasonString } from './course';
+import { toRangeTime, toSeasonString } from './course';
+import type { PersonalBlock } from './personalBlock';
 import {
   academicCalendars,
   type SimpleDate,
@@ -209,6 +210,54 @@ export type CourseRBCEvent = {
   location: string;
   walkBefore?: WalkBefore;
 };
+
+export type PersonalBlockRBCEvent = {
+  kind: 'personal';
+  title: string;
+  start: Date;
+  end: Date;
+  block: PersonalBlock;
+};
+
+export type WorksheetRBCEvent = CourseRBCEvent | PersonalBlockRBCEvent;
+
+export function hasPersonalBlockConflict(
+  blocks: PersonalBlock[] = [],
+  event: Pick<CourseRBCEvent, 'start' | 'end'>,
+): boolean {
+  const toRange = (date: Date) => date.getHours() * 12 + date.getMinutes() / 5;
+  const start = toRange(event.start);
+  const end = toRange(event.end);
+  return blocks.some(
+    (block) =>
+      block.days.includes(event.start.getDay()) &&
+      toRangeTime(block.start) <= end &&
+      start <= toRangeTime(block.end),
+  );
+}
+
+export function getPersonalBlockEvents(
+  blocks: PersonalBlock[],
+): PersonalBlockRBCEvent[] {
+  return blocks.flatMap((block) =>
+    [...new Set(block.days)].map((day) => {
+      const start = new Date();
+      start.setDate(start.getDate() - start.getDay() + day);
+      const end = new Date(start);
+      const [startHour, startMinute] = block.start.split(':');
+      const [endHour, endMinute] = block.end.split(':');
+      start.setHours(Number(startHour), Number(startMinute), 0, 0);
+      end.setHours(Number(endHour), Number(endMinute), 0, 0);
+      return {
+        kind: 'personal',
+        title: block.title,
+        start,
+        end,
+        block,
+      };
+    }),
+  );
+}
 
 export type WalkClassSummary = {
   courseCode: string;

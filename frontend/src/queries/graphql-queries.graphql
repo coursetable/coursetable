@@ -90,6 +90,7 @@ query CourseModalOverviewData(
 fragment CourseModalPrefetchListingData on listings {
   crn
   course_code
+  section_full
   course {
     ...CourseModalPrefetchCourseData
   }
@@ -109,6 +110,7 @@ fragment CourseModalPrefetchCourseData on courses {
   listings {
     crn
     course_code
+    section_full
   }
   course_professors {
     professor {
@@ -262,6 +264,28 @@ query LatestCurrentOffering($sameCourseId: Int!, $seasonCodes: [String!]!) {
     listings(limit: 1) {
       crn
       course_code
+    }
+  }
+}
+
+# Most recent earlier offering of each section, used to estimate class hours for
+# courses that don't have scheduled meeting times yet
+query PastCourseMeetings($sameCourseIds: [Int!]!, $seasonCode: String!) {
+  courses(
+    where: {
+      same_course_id: { _in: $sameCourseIds }
+      season_code: { _lt: $seasonCode }
+    }
+    distinct_on: [same_course_id, section]
+    order_by: [{ same_course_id: asc }, { section: asc }, { season_code: desc }]
+  ) {
+    same_course_id
+    season_code
+    section
+    course_meetings {
+      days_of_week
+      start_time
+      end_time
     }
   }
 }

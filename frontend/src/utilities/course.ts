@@ -1,5 +1,7 @@
 // Performing various actions on the listing dictionary
 import { weekdays } from './constants';
+import type { PersonalBlock } from './personalBlock';
+import { CUR_YEAR } from '../config';
 import type { Courses, Listings } from '../generated/graphql-types';
 import type {
   FriendRecord,
@@ -151,6 +153,23 @@ export function checkConflict(
     }
   }
   return conflicts;
+}
+
+export function getPersonalBlockConflicts(
+  blocks: PersonalBlock[] = [],
+  listing: ListingWithTimes,
+): PersonalBlock[] {
+  return blocks.filter((block) => {
+    const daysOfWeek = block.days.reduce((mask, day) => mask | (1 << day), 0);
+    const start = toRangeTime(block.start);
+    const end = toRangeTime(block.end);
+    return listing.course.course_meetings.some(
+      (meeting) =>
+        Boolean(daysOfWeek & meeting.days_of_week) &&
+        start <= toRangeTime(meeting.end_time) &&
+        toRangeTime(meeting.start_time) <= end,
+    );
+  });
 }
 
 export type NumFriendsReturn = {
@@ -480,6 +499,18 @@ type CourseWithEnrolled = {
 
 export function isGraduate(listing: Pick<Listings, 'school'>): boolean {
   return listing.school !== 'YC' && listing.school !== 'SU';
+}
+
+export function isSectionFull(listing: {
+  section_full?: boolean | null;
+  course: { season_code: Season };
+}): boolean {
+  // Historical seasons keep their last-known fullness forever, so only
+  // surface the indicator for seasons we still update.
+  return (
+    listing.section_full === true &&
+    CUR_YEAR.includes(listing.course.season_code)
+  );
 }
 
 export function isDiscussionSection(
