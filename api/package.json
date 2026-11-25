@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@coursetable/passport-cas": "^0.1.4",
-    "@fontsource/inter": "^5.3.0",
+    "@expo-google-fonts/inter": "^0.4.2",
     "@resvg/resvg-js": "^2.6.2",
     "@sentry/node": "^8.48.0",
     "chroma-js": "^3.1.2",

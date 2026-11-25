@@ -38,7 +38,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@coursetable/passport-cas": "^0.1.4",
-        "@fontsource/inter": "^5.3.0",
+        "@expo-google-fonts/inter": "^0.4.2",
         "@resvg/resvg-js": "^2.6.2",
         "@sentry/node": "^8.48.0",
         "chroma-js": "^3.1.2",
@@ -549,6 +549,8 @@
 
     "@eslint/plugin-kit": ["@eslint/plugin-kit@0.7.0", "", { "dependencies": { "@eslint/core": "^1.2.0", "levn": "^0.4.1" } }, "sha512-ejvBr8MQCbVsWNZnCwDXjUKq40MDmHalq7cJ6e9s/qzTUFIIo/afzt1Vui9T97FM/V/pN4YsFVoed5NIa96RDg=="],
 
+    "@expo-google-fonts/inter": ["@expo-google-fonts/inter@0.4.2", "", {}, "sha512-syfiImMaDmq7cFi0of+waE2M4uSCyd16zgyWxdPOY7fN2VBmSLKEzkfbZgeOjJq61kSqPBNNtXjggiQiSD6gMQ=="],
+
     "@fastify/busboy": ["@fastify/busboy@3.2.0", "", {}, "sha512-m9FVDXU3GT2ITSe0UaMA5rU3QkfC/UXtCU8y0gSN/GugTqtVldOBWIB5V6V3sbmenVZUIpU6f+mPEO2+m5iTaA=="],
 
     "@floating-ui/core": ["@floating-ui/core@1.7.5", "", { "dependencies": { "@floating-ui/utils": "^0.2.11" } }, "sha512-1Ih4WTWyw0+lKyFMcBHGbb5U5FtuHJuujoyyr5zTaWS5EYMeT6Jb2AuDeftsCsEuchO+mM2ij5+q9crhydzLhQ=="],
@@ -558,8 +560,6 @@
     "@floating-ui/react-dom": ["@floating-ui/react-dom@2.1.8", "", { "dependencies": { "@floating-ui/dom": "^1.7.6" }, "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-cC52bHwM/n/CxS87FH0yWdngEZrjdtLW/qVruo68qg+prK7ZQ4YGdut2GyDVpoGeAYe/h899rVeOVm6Oi40k2A=="],
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
-
-    "@fontsource/inter": ["@fontsource/inter@5.3.0", "", {}, "sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g=="],
 
     "@graphiql/react": ["@graphiql/react@0.29.0", "", { "dependencies": { "@graphiql/toolkit": "^0.11.2", "@headlessui/react": "^1.7.15", "@radix-ui/react-dialog": "^1.0.4", "@radix-ui/react-dropdown-menu": "^2.0.5", "@radix-ui/react-tooltip": "^1.0.6", "@radix-ui/react-visually-hidden": "^1.0.3", "@types/codemirror": "^5.60.8", "clsx": "^1.2.1", "codemirror": "^5.65.3", "codemirror-graphql": "^2.2.1", "copy-to-clipboard": "^3.2.0", "framer-motion": "^6.5.1", "get-value": "^3.0.1", "graphql-language-service": "^5.3.1", "markdown-it": "^14.1.0", "react-compiler-runtime": "19.1.0-rc.1", "set-value": "^4.1.0" }, "peerDependencies": { "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0", "react": "^16.8.0 || ^17 || ^18", "react-dom": "^16.8.0 || ^17 || ^18" } }, "sha512-4Zd57+DeK5t1KYiqy9hnuaQhR8fnZ1CkKUkmZqINpAe0OlpbszOE661zwNGuW5NjbXgepfI89ICnh1ZVinSJvg=="],
 

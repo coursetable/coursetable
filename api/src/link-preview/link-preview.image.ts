@@ -47,18 +47,15 @@ function readAsset(name: string) {
   return fs.readFile(new URL(`./assets/${name}`, import.meta.url));
 }
 
-// Literal paths so depcheck can see the dependency
+// Full (unsubsetted) Inter files: satori doesn't reliably pick between
+// same-named subset files, which left some characters (e.g. ʿ) as missing
+// glyphs. Literal paths so depcheck can see the dependency
 const fontFiles = [
-  [400, require.resolve('@fontsource/inter/files/inter-latin-400-normal.woff')],
-  [700, require.resolve('@fontsource/inter/files/inter-latin-700-normal.woff')],
   [
     400,
-    require.resolve('@fontsource/inter/files/inter-latin-ext-400-normal.woff'),
+    require.resolve('@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf'),
   ],
-  [
-    700,
-    require.resolve('@fontsource/inter/files/inter-latin-ext-700-normal.woff'),
-  ],
+  [700, require.resolve('@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf')],
 ] as const;
 
 function loadFonts(): Promise<Font[]> {
@@ -146,7 +143,11 @@ function detail(label: string, value: string) {
 export async function renderCoursePreviewImage(
   listing: Listing,
 ): Promise<Buffer> {
-  resources ??= loadResources();
+  // Don't keep a failed load around, or every later render would fail too
+  resources ??= loadResources().catch((err: unknown) => {
+    resources = null;
+    throw err;
+  });
   const { fonts, icon, wordmark } = await resources;
   const { course } = listing;
   // Areas and skills are stored as JSON arrays of codes
@@ -154,7 +155,7 @@ export async function renderCoursePreviewImage(
     ...((course.areas ?? []) as string[]),
     ...((course.skills ?? []) as string[]),
   ];
-  const credits = Number(course.credits ?? 0);
+  const credits = course.credits ?? 0;
 
   const element = h(
     'div',
@@ -239,5 +240,7 @@ export async function renderCoursePreviewImage(
     height: IMAGE_HEIGHT,
     fonts,
   });
-  return new Resvg(svg).render().asPng();
+  // Text is already converted to paths by satori, so system fonts are unused
+  // and scanning them on every render is slow
+  return new Resvg(svg, { font: { loadSystemFonts: false } }).render().asPng();
 }

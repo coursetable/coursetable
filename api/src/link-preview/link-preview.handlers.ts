@@ -208,16 +208,50 @@ export async function generateLinkPreview(
     .send(renderTemplate(metadata));
 }
 
+// Rendered images by course-modal value. Bounded so it can't grow without
+// limit, expiring with the same lifetime as the Cache-Control header, and
+// storing the promise so concurrent requests for a course share one render.
+const IMAGE_CACHE_MAX_ENTRIES = 200;
+const IMAGE_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const imageCache = new Map<
+  string,
+  { expiresAt: number; image: Promise<Buffer | null> }
+>();
+
+function getCoursePreviewImage(query: string): Promise<Buffer | null> {
+  const cached = imageCache.get(query);
+  if (cached && cached.expiresAt > Date.now()) return cached.image;
+  imageCache.delete(query);
+
+  const image = fetchListing(query).then((listing) =>
+    listing ? renderCoursePreviewImage(listing) : null,
+  );
+  imageCache.set(query, { expiresAt: Date.now() + IMAGE_CACHE_TTL_MS, image });
+  // Maps iterate in insertion order, so the first key is the oldest entry
+  if (imageCache.size > IMAGE_CACHE_MAX_ENTRIES)
+    imageCache.delete(imageCache.keys().next().value!);
+
+  // Only keep successful renders; unknown courses and failures are retried
+  const evict = () => {
+    if (imageCache.get(query)?.image === image) imageCache.delete(query);
+  };
+  image.then((png) => {
+    if (!png) evict();
+  }, evict);
+  return image;
+}
+
 export async function generateLinkPreviewImage(
   req: express.Request,
   res: express.Response,
 ): Promise<void> {
-  const listing = await fetchListing(req.query['course-modal']);
-  if (!listing) {
+  const query = req.query['course-modal'];
+  const image =
+    typeof query === 'string' ? await getCoursePreviewImage(query) : null;
+  if (!image) {
     res.status(404).send('Course not found');
     return;
   }
-  const image = await renderCoursePreviewImage(listing);
   res
     .header('Content-Type', 'image/png')
     // Crawlers cache previews anyway, and course info rarely changes
