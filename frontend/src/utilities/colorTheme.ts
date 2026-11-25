@@ -45,6 +45,18 @@ export function applyTheme<T extends CourseColor & { crn: Crn }>(
   });
 }
 
+// Courses on the theme's colors take its new colors; custom colors stay
+export function applyThemeEdit<T extends CourseColor>(
+  courses: readonly T[],
+  colors: readonly string[],
+): T[] {
+  return courses.map((course) =>
+    course.colorIndex === null
+      ? course
+      : { ...course, color: colors[course.colorIndex]! },
+  );
+}
+
 /**
  * Courses as the color picker would save them. Changing the theme recolors
  * every course; otherwise only the picked course changes, so a stored color is

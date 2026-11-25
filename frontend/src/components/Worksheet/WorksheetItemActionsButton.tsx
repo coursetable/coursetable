@@ -188,8 +188,13 @@ export function ColorPickerModal({
     onClose();
   };
 
+  const closeThemePanel = () => {
+    setThemePanelOpen(false);
+    updateColorPickerDraft({ editedTheme: undefined });
+  };
+
   const save = async () => {
-    const changed = preview.courses.flatMap(({ crn, color, colorIndex }, i) =>
+    const changed = preview.toSave.flatMap(({ crn, color, colorIndex }, i) =>
       color === courses[i]!.color && colorIndex === courses[i]!.colorIndex
         ? []
         : { crn, color, colorIndex },
@@ -237,7 +242,10 @@ export function ColorPickerModal({
           presetColors={theme.colors}
           themeName={theme.name}
           themePanelOpen={themePanelOpen}
-          onToggleThemePanel={() => setThemePanelOpen((open) => !open)}
+          onToggleThemePanel={() => {
+            if (themePanelOpen) closeThemePanel();
+            else setThemePanelOpen(true);
+          }}
         />
         <Preview event={openColorPickerEvent} color={color} />
       </Modal.Body>
@@ -268,7 +276,7 @@ export function ColorPickerModal({
                   : preview.picked,
             })
           }
-          onClose={() => setThemePanelOpen(false)}
+          onClose={closeThemePanel}
         />
       )}
     </Modal>
@@ -553,15 +561,27 @@ function ThemePanel({
   readonly onSelect: (id: number) => void;
   readonly onClose: () => void;
 }) {
-  const { worksheets, colorThemesRefresh, worksheetsRefresh } = useStore(
+  const {
+    worksheets,
+    colorThemesRefresh,
+    worksheetsRefresh,
+    updateColorPickerDraft,
+  } = useStore(
     useShallow((state) => ({
       worksheets: state.worksheets,
       colorThemesRefresh: state.colorThemesRefresh,
       worksheetsRefresh: state.worksheetsRefresh,
+      updateColorPickerDraft: state.updateColorPickerDraft,
     })),
   );
   const [copying, setCopying] = useState(false);
   const [draft, setDraft] = useState<ThemeDraft | null>(null);
+
+  const closeEditor = () => {
+    setDraft(null);
+    // Stop previewing the edited colors
+    updateColorPickerDraft({ editedTheme: undefined });
+  };
 
   const canAdd = themes.length < MAX_THEMES && !copying;
 
@@ -572,7 +592,7 @@ function ThemePanel({
     ]);
     if (created) await colorThemesRefresh();
     setCopying(false);
-    setDraft(null);
+    closeEditor();
   };
 
   // The worksheets (in any season, newest first) that use a theme
@@ -607,17 +627,22 @@ function ThemePanel({
           usedBy={draft.id === undefined ? [] : worksheetsUsing(draft.id)}
           canCopy={canAdd}
           onCopy={copyTheme}
-          onCancel={() => setDraft(null)}
+          onColorsChange={(colors) => {
+            // Preview an existing theme's edit on worksheets using it
+            if (draft.id !== undefined)
+              updateColorPickerDraft({ editedTheme: { id: draft.id, colors } });
+          }}
+          onCancel={closeEditor}
           onSaved={async (saved) => {
             // The API recolored courses on worksheets using the theme
             await Promise.all([colorThemesRefresh(), worksheetsRefresh()]);
             onSelect(saved.id);
-            setDraft(null);
+            closeEditor();
           }}
           onDeleted={async () => {
             // The API reset worksheets that used it to the default theme
             await Promise.all([colorThemesRefresh(), worksheetsRefresh()]);
-            setDraft(null);
+            closeEditor();
           }}
         />
       ) : (
@@ -657,6 +682,7 @@ function ThemeEditor({
   usedBy,
   canCopy,
   onCopy,
+  onColorsChange,
   onCancel,
   onSaved,
   onDeleted,
@@ -665,6 +691,7 @@ function ThemeEditor({
   readonly usedBy: readonly { key: string; label: string }[];
   readonly canCopy: boolean;
   readonly onCopy: (name: string, colors: readonly string[]) => Promise<void>;
+  readonly onColorsChange: (colors: readonly string[]) => void;
   readonly onCancel: () => void;
   readonly onSaved: (theme: ColorTheme) => Promise<void>;
   readonly onDeleted: () => Promise<void>;
@@ -683,7 +710,9 @@ function ThemeEditor({
   const [keepColors, setKeepColors] = useState(false);
 
   const setSlotColor = (color: string) => {
-    setColors((prev) => prev.map((c, i) => (i === activeSlot ? color : c)));
+    const next = colors.map((c, i) => (i === activeSlot ? color : c));
+    setColors(next);
+    onColorsChange(next);
   };
   // The API only accepts #rrggbb
   const normalizedColors = () => colors.map((c) => chroma(c).hex('rgb'));

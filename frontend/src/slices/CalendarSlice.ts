@@ -5,14 +5,19 @@ import { useStore, type Store } from '../store';
 import type { CourseRBCEvent } from '../utilities/calendar';
 import {
   applyColorDraft,
+  applyThemeEdit,
   getWorksheetTheme,
   type CourseColor,
 } from '../utilities/colorTheme';
 
 // The color picker's unsaved changes, previewed on the worksheet until saved
 type ColorPickerDraft = {
-  readonly picked?: CourseColor;
-  readonly themeId?: number;
+  readonly picked?: CourseColor | undefined;
+  readonly themeId?: number | undefined;
+  // Colors of a theme open in the theme editor, saved separately with it
+  readonly editedTheme?:
+    | { readonly id: number; readonly colors: readonly string[] }
+    | undefined;
 };
 
 interface CalendarSliceState {
@@ -72,7 +77,8 @@ export const createCalendarSlice: StateCreator<Store, [], [], CalendarSlice> = (
 
 /**
  * The viewed worksheet's courses with the open color picker's unsaved changes
- * applied, plus the theme they use.
+ * applied, plus the theme they use. `toSave` leaves out a theme being edited,
+ * since the theme editor saves that itself.
  */
 export function useColorPickerPreview() {
   const { courses, colorThemes, savedThemeId, crn, draft } = useStore(
@@ -86,16 +92,39 @@ export function useColorPickerPreview() {
       draft: state.colorPickerDraft,
     })),
   );
-  const theme = getWorksheetTheme(colorThemes, draft.themeId ?? savedThemeId);
+  const selectedTheme = getWorksheetTheme(
+    colorThemes,
+    draft.themeId ?? savedThemeId,
+  );
   const themeChanged =
-    theme.id !== getWorksheetTheme(colorThemes, savedThemeId).id;
+    selectedTheme.id !== getWorksheetTheme(colorThemes, savedThemeId).id;
   // Memoized so the calendar only rebuilds its events when colors change
-  const previewCourses = useMemo(
+  const toSave = useMemo(
     () =>
       crn === undefined
         ? courses
-        : applyColorDraft(courses, crn, draft.picked, theme, themeChanged),
-    [courses, crn, draft.picked, theme, themeChanged],
+        : applyColorDraft(
+            courses,
+            crn,
+            draft.picked,
+            selectedTheme,
+            themeChanged,
+          ),
+    [courses, crn, draft.picked, selectedTheme, themeChanged],
   );
-  return { courses: previewCourses, picked: draft.picked, theme, themeChanged };
+  const edit =
+    draft.editedTheme?.id === selectedTheme.id ? draft.editedTheme : undefined;
+  const previewCourses = useMemo(
+    () => (edit ? applyThemeEdit(toSave, edit.colors) : toSave),
+    [toSave, edit],
+  );
+  return {
+    courses: previewCourses,
+    toSave,
+    picked: draft.picked,
+    theme: edit
+      ? { ...selectedTheme, colors: [...edit.colors] }
+      : selectedTheme,
+    themeChanged,
+  };
 }

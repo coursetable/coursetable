@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   applyColorDraft,
   applyTheme,
+  applyThemeEdit,
   fallbackTheme,
   getWorksheetTheme,
 } from './colorTheme';
@@ -85,5 +86,17 @@ describe('applyColorDraft', () => {
       crn: crn(1),
       ...picked,
     });
+  });
+});
+
+describe('applyThemeEdit', () => {
+  it('moves theme colors to the edit and leaves custom colors', () => {
+    const custom = { color: '#123456', colorIndex: null };
+    expect(
+      applyThemeEdit(
+        [{ color: '#000002', colorIndex: 2 }, custom],
+        next.colors,
+      ),
+    ).toEqual([{ color: next.colors[2], colorIndex: 2 }, custom]);
   });
 });
