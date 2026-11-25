@@ -242,6 +242,13 @@ export function ColorPickerModal({
         <Preview event={openColorPickerEvent} color={color} />
       </Modal.Body>
       <Modal.Footer>
+        <button
+          type="button"
+          className={styles.textButton}
+          onClick={handleClose}
+        >
+          Cancel
+        </button>
         <Button variant="primary" onClick={save}>
           Save
         </Button>
