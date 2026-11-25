@@ -1195,9 +1195,11 @@ export async function updateColorTheme(
   });
 }
 
-export async function deleteColorTheme(id: number) {
+// `keepColors`: whether worksheets using the theme keep their courses' current
+// colors, instead of switching them to the default theme's
+export async function deleteColorTheme(id: number, keepColors: boolean) {
   return await fetchAPI('/colorThemes/delete', {
-    body: { id },
+    body: { id, keepColors },
     breadcrumb: {
       category: 'colorThemes',
       message: 'Deleting color theme',

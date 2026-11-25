@@ -10,6 +10,7 @@ import {
   Button,
   DropdownButton,
   Dropdown,
+  Form,
 } from 'react-bootstrap';
 import { FaEllipsisH } from 'react-icons/fa';
 import { FaCheck, FaChevronLeft, FaPlus, FaRegCopy } from 'react-icons/fa6';
@@ -661,6 +662,7 @@ function ThemeEditor({
   const [activeSlot, setActiveSlot] = useState(0);
   const [busy, setBusy] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [keepColors, setKeepColors] = useState(false);
 
   const setSlotColor = (color: string) => {
     setColors((prev) => prev.map((c, i) => (i === activeSlot ? color : c)));
@@ -682,7 +684,7 @@ function ThemeEditor({
 
   const remove = async (id: number) => {
     setBusy(true);
-    if (await deleteColorTheme(id)) await onDeleted();
+    if (await deleteColorTheme(id, keepColors)) await onDeleted();
     setBusy(false);
   };
 
@@ -738,7 +740,18 @@ function ThemeEditor({
                   <li key={key}>{label}</li>
                 ))}
               </ul>
-              <p>All courses will keep their current colors.</p>
+              <p>
+                {keepColors
+                  ? 'Courses will keep their current colors.'
+                  : 'Courses will switch to Classic colors, except custom ones.'}
+              </p>
+              <Form.Check
+                type="switch"
+                id="theme-delete-keep-colors-switch"
+                label="Keep current colors"
+                checked={keepColors}
+                onChange={(e) => setKeepColors(e.currentTarget.checked)}
+              />
             </div>
             <div className={styles.themeEditorFooter}>
               <div className={styles.themeEditorActions}>

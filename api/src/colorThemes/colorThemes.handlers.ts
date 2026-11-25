@@ -26,6 +26,9 @@ const UpdateThemeSchema = ThemeBodySchema.extend({
 
 const DeleteThemeSchema = z.object({
   id: z.number().int().positive(),
+  // Whether worksheets using the theme keep their courses' current colors,
+  // instead of switching them to the default theme's
+  keepColors: z.boolean(),
 });
 
 const themeColumns = {
@@ -126,7 +129,7 @@ export const deleteColorTheme = async (
     return;
   }
 
-  const { id } = bodyParseRes.data;
+  const { id, keepColors } = bodyParseRes.data;
   const theme = await db.query.colorThemes.findFirst({
     where: editableTheme(id, netId),
     columns: { id: true },
@@ -137,23 +140,44 @@ export const deleteColorTheme = async (
   }
 
   await db.transaction(async (tx) => {
-    // Courses keep their colors but no longer follow a theme. This has to
-    // happen first: deleting the theme clears worksheets' colorThemeId
+    // Recolor first: deleting the theme clears worksheets' colorThemeId
     // (falling back to the default theme), after which we can't find them.
-    await tx
-      .update(worksheetCourses)
-      .set({ colorIndex: null })
-      .where(
-        inArray(
-          worksheetCourses.worksheetId,
+    const inAffectedWorksheet = inArray(
+      worksheetCourses.worksheetId,
+      tx
+        .select({ id: worksheets.id })
+        .from(worksheets)
+        .where(
+          and(eq(worksheets.netId, netId), eq(worksheets.colorThemeId, id)),
+        ),
+    );
+    if (keepColors) {
+      // Same colors, but no longer following a theme
+      await tx
+        .update(worksheetCourses)
+        .set({ colorIndex: null })
+        .where(inAffectedWorksheet);
+    } else {
+      // Theme colors take the default theme's color for their slot; custom
+      // colors weren't from the theme, so they stay
+      const fallback = await tx.query.colorThemes.findFirst({
+        where: and(
+          eq(colorThemes.netId, netId),
+          eq(colorThemes.isDefault, true),
+        ),
+        columns: { colors: true },
+      });
+      await Promise.all(
+        (fallback?.colors ?? []).map((color, slot) =>
           tx
-            .select({ id: worksheets.id })
-            .from(worksheets)
+            .update(worksheetCourses)
+            .set({ color })
             .where(
-              and(eq(worksheets.netId, netId), eq(worksheets.colorThemeId, id)),
+              and(inAffectedWorksheet, eq(worksheetCourses.colorIndex, slot)),
             ),
         ),
       );
+    }
     await tx.delete(colorThemes).where(eq(colorThemes.id, id));
   });
   res.sendStatus(200);
