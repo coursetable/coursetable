@@ -661,9 +661,8 @@ export function useEventStyle() {
 
       if (!isMobile && hoverCourse) {
         if (hoverCourse === event.listing.crn) {
-          const emphasized = color.saturate(1);
-          backgroundColor = emphasized.alpha(0.9).css();
-          borderColor = emphasized.css();
+          // The course's own color, at full opacity
+          backgroundColor = color.css();
         } else {
           backgroundColor = color.alpha(0.3).css();
           borderColor = color.alpha(0.3).css();
