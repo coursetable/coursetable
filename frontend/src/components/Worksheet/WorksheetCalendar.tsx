@@ -186,9 +186,13 @@ function WorksheetCalendar({
     calendarLockStart,
     calendarLockEnd,
     personalBlocks,
+    hoverCourse,
+    isMobile,
   } = useStore(
     useShallow((state) => ({
       courses: state.courses,
+      hoverCourse: state.hoverCourse,
+      isMobile: state.isMobile,
       viewedSeason: state.viewedSeason,
       setOpenColorPickerEvent: state.setOpenColorPickerEvent,
       setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,
@@ -204,13 +208,21 @@ function WorksheetCalendar({
     })),
   );
   const eventStyleGetter = useEventStyle();
-  const allEvents = useMemo(
-    (): WorksheetRBCEvent[] => [
-      ...getCalendarEvents('rbc', courses, viewedSeason),
+  const allEvents = useMemo((): WorksheetRBCEvent[] => {
+    // Hovering a hidden course in the list previews it on the calendar
+    const previewCrn = isMobile ? null : hoverCourse;
+    const calendarCourses = previewCrn
+      ? courses.map((course) =>
+          course.hidden && course.crn === previewCrn
+            ? { ...course, hidden: false }
+            : course,
+        )
+      : courses;
+    return [
+      ...getCalendarEvents('rbc', calendarCourses, viewedSeason),
       ...getPersonalBlockEvents(personalBlocks ?? []),
-    ],
-    [courses, viewedSeason, personalBlocks],
-  );
+    ];
+  }, [courses, viewedSeason, personalBlocks, hoverCourse, isMobile]);
   const { earliest, latest, parsedEvents } = useMemo(() => {
     if (isCalendarViewLocked) {
       const filteredEvents = allEvents.filter((event) => {
