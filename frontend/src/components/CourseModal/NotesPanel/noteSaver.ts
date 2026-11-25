@@ -38,6 +38,10 @@ export function createNoteSaver({
   }, delay);
 
   return {
+    setBaseline(content: string) {
+      latestContent = content;
+      savedContent = content;
+    },
     update(content: string) {
       latestContent = content;
       debouncedSave();

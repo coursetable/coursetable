@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CharacterCount, Placeholder } from '@tiptap/extensions';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -49,6 +49,7 @@ function NoteEditor({
   readonly sameCourseId: number;
   readonly initialContent: string;
 }) {
+  const normalized = useRef<string | null>(null);
   const [status, setStatus] = useState<NoteSaveStatus>('idle');
   const [length, setLength] = useState(0);
   const [tooLarge, setTooLarge] = useState(false);
@@ -68,10 +69,18 @@ function NoteEditor({
     editorProps: {},
     onCreate({ editor: created }) {
       setLength(created.storage.characterCount.characters());
+      const content = created.isEmpty ? '' : JSON.stringify(created.getJSON());
+      normalized.current = content;
+      saver.setBaseline(content);
     },
     onUpdate({ editor: updated }) {
       setLength(updated.storage.characterCount.characters());
       const content = updated.isEmpty ? '' : JSON.stringify(updated.getJSON());
+      if (normalized.current !== null) {
+        const unchanged = normalized.current === content;
+        normalized.current = null;
+        if (unchanged) return;
+      }
       const large = new TextEncoder().encode(content).length > MAX_NOTE_BYTES;
       setTooLarge(large);
       if (!large) saver.update(content);
