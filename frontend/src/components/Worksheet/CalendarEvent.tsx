@@ -672,6 +672,12 @@ function CalendarEvent({
 
 export function useEventStyle() {
   const hoverCourse = useStore((state) => state.hoverCourse);
+  // A hovered hidden course is only on the calendar as a preview
+  const isHoverCourseHidden = useStore((state) =>
+    state.courses.some(
+      (course) => course.hidden && course.crn === state.hoverCourse,
+    ),
+  );
   const isMobile = useStore((state) => state.isMobile);
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
@@ -696,6 +702,12 @@ export function useEventStyle() {
         borderColor,
         borderWidth: '2px',
       };
+      if (isHoverCourseHidden && hoverCourse === event.listing.crn) {
+        // Diagonal stripes of the same color mark a hidden course preview
+        const stripeColor = chroma(backgroundColor);
+        style.backgroundColor = 'transparent';
+        style.backgroundImage = `repeating-linear-gradient(-45deg, ${stripeColor.css()} 0 24px, ${stripeColor.alpha(stripeColor.alpha() * 0.7).css()} 24px 48px)`;
+      }
       // Hover management is too hard on mobile and not very useful
       if (isMobile) return { style };
       if (hoverCourse && hoverCourse === event.listing.crn) style.zIndex = 2;
@@ -703,7 +715,7 @@ export function useEventStyle() {
         style,
       };
     },
-    [isMobile, hoverCourse],
+    [isMobile, hoverCourse, isHoverCourseHidden],
   );
   return eventStyleGetter;
 }
