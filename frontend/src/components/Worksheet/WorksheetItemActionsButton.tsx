@@ -466,10 +466,37 @@ function Picker({
   // Anything not picked from the theme's presets is a custom color
   const pickCustom = (newColor: string) =>
     onPick({ color: newColor, colorIndex: null });
+  // When `color` changes quickly from outside (e.g. while the theme is
+  // edited), react-colorful can echo an older color through onChange. Only
+  // take changes while the user is using the picker.
+  const usingWheel = useRef(false);
+  const stopUsingWheel = () => {
+    usingWheel.current = false;
+  };
   return (
     <div className={styles.pickerPanel}>
       <div className={styles.pickerSection}>
-        <HexColorPicker color={color} onChange={pickCustom} />
+        {/* Only notices input on react-colorful's own (accessible) sliders */}
+        {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+        <div
+          onPointerDown={() => {
+            usingWheel.current = true;
+            window.addEventListener('pointerup', stopUsingWheel, {
+              once: true,
+            });
+          }}
+          onKeyDown={() => {
+            usingWheel.current = true;
+          }}
+          onKeyUp={stopUsingWheel}
+        >
+          <HexColorPicker
+            color={color}
+            onChange={(newColor) => {
+              if (usingWheel.current) pickCustom(newColor);
+            }}
+          />
+        </div>
         <ColorInput color={color} setColor={pickCustom} />
       </div>
       <hr className={styles.pickerDivider} />
