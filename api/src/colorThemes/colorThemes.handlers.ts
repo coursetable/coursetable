@@ -1,5 +1,14 @@
 import type express from 'express';
-import { and, asc, count, eq, inArray, isNull, sql } from 'drizzle-orm';
+import {
+  and,
+  asc,
+  count,
+  eq,
+  inArray,
+  isNotNull,
+  isNull,
+  sql,
+} from 'drizzle-orm';
 import z from 'zod';
 
 import { ensureColorThemesSeeded } from './colorThemes.utils.js';
@@ -104,11 +113,41 @@ export const updateColorTheme = async (
   }
 
   const { id, name, colors } = bodyParseRes.data;
-  const [updated] = await db
-    .update(colorThemes)
-    .set({ name, colors })
-    .where(editableTheme(id, netId))
-    .returning(themeColumns);
+  const updated = await db.transaction(async (tx) => {
+    const [theme] = await tx
+      .update(colorThemes)
+      .set({ name, colors })
+      .where(editableTheme(id, netId))
+      .returning(themeColumns);
+    if (!theme) return undefined;
+    // Courses on the theme's colors follow the edit; custom colors stay.
+    // Postgres arrays are 1-based.
+    const newColors = sql`ARRAY[${sql.join(
+      colors.map((c) => sql`${c}`),
+      sql`, `,
+    )}]::text[]`;
+    await tx
+      .update(worksheetCourses)
+      .set({ color: sql`(${newColors})[${worksheetCourses.colorIndex} + 1]` })
+      .where(
+        and(
+          isNotNull(worksheetCourses.colorIndex),
+          inArray(
+            worksheetCourses.worksheetId,
+            tx
+              .select({ id: worksheets.id })
+              .from(worksheets)
+              .where(
+                and(
+                  eq(worksheets.netId, netId),
+                  eq(worksheets.colorThemeId, id),
+                ),
+              ),
+          ),
+        ),
+      );
+    return theme;
+  });
 
   if (!updated) {
     res.status(404).json({ error: 'THEME_NOT_FOUND' });

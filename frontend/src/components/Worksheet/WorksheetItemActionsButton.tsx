@@ -609,7 +609,8 @@ function ThemePanel({
           onCopy={copyTheme}
           onCancel={() => setDraft(null)}
           onSaved={async (saved) => {
-            await colorThemesRefresh();
+            // The API recolored courses on worksheets using the theme
+            await Promise.all([colorThemesRefresh(), worksheetsRefresh()]);
             onSelect(saved.id);
             setDraft(null);
           }}
