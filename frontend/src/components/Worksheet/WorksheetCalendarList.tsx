@@ -590,8 +590,8 @@ function WorksheetCalendarList({
                   <>
                     Lock custom colors
                     <p className="text-muted small mb-0">
-                      Changing or randomizing the theme won't recolor classes
-                      you gave a custom color
+                      Changing or editing themes won't recolor classes with
+                      custom colors
                     </p>
                   </>
                 }
