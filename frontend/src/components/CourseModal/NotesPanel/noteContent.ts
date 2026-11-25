@@ -24,7 +24,8 @@ export function isWebLink(url: string) {
 
 export function noteText(content: string) {
   const parts: string[] = [];
-  const walk = (node: JSONContent) => {
+  const walk = (node: JSONContent | null) => {
+    if (!node) return;
     if (node.text) parts.push(node.text);
     node.content?.forEach(walk);
     if (node.type !== 'text') parts.push(' ');

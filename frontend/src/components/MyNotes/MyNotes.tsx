@@ -12,6 +12,7 @@ import { toSeasonString } from '../../utilities/course';
 import { createCourseModalLink } from '../../utilities/display';
 import { noteText } from '../CourseModal/NotesPanel/noteContent';
 import NoteEditor from '../CourseModal/NotesPanel/NoteEditor';
+import { whenNotesSaved } from '../CourseModal/NotesPanel/noteSaver';
 import Spinner from '../Spinner';
 import { TextComponent } from '../Typography';
 import styles from './MyNotes.module.css';
@@ -92,25 +93,27 @@ function MyNotes() {
     if (modalOpen) return undefined;
     let cancelled = false;
     setReloading(true);
-    void fetchCourseNotes().then((fetched) => {
-      if (cancelled) return;
-      setReloading(false);
-      if (!fetched) {
-        setLoaded((prev) => (prev === 'loading' ? 'failed' : prev));
-        return;
-      }
-      setLoaded((prev) => ({
-        notes: fetched,
-        version: typeof prev === 'object' ? prev.version + 1 : 0,
-      }));
-      setEdits({});
-      setSelected((prev) => {
-        const keep = prev && fetched.find((n) => n.sameCourseId === prev.id);
-        const pick =
-          keep ?? [...fetched].sort((a, b) => b.updatedAt - a.updatedAt)[0];
-        return pick ? { id: pick.sameCourseId, content: pick.content } : null;
+    void whenNotesSaved()
+      .then(fetchCourseNotes)
+      .then((fetched) => {
+        if (cancelled) return;
+        setReloading(false);
+        if (!fetched) {
+          setLoaded((prev) => (prev === 'loading' ? 'failed' : prev));
+          return;
+        }
+        setLoaded((prev) => ({
+          notes: fetched,
+          version: typeof prev === 'object' ? prev.version + 1 : 0,
+        }));
+        setEdits({});
+        setSelected((prev) => {
+          const keep = prev && fetched.find((n) => n.sameCourseId === prev.id);
+          const pick =
+            keep ?? [...fetched].sort((a, b) => b.updatedAt - a.updatedAt)[0];
+          return pick ? { id: pick.sameCourseId, content: pick.content } : null;
+        });
       });
-    });
     return () => {
       cancelled = true;
     };
