@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
@@ -36,7 +36,13 @@ function CourseModal({
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
-  const [view, setView] = useState<'overview' | 'evals' | 'notes'>('overview');
+  const location = useLocation();
+  const [view, setView] = useState<'overview' | 'evals' | 'notes'>(() =>
+    (location.state as { courseModalView?: string } | null)?.courseModalView ===
+    'notes'
+      ? 'notes'
+      : 'overview',
+  );
   const [searchParams] = useSearchParams();
   const { closeModal, navigate } = useModalHistory();
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;

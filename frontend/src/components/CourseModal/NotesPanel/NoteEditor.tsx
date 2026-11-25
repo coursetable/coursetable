@@ -45,9 +45,11 @@ const extensions = [
 function NoteEditor({
   sameCourseId,
   initialContent,
+  onChange,
 }: {
   readonly sameCourseId: number;
   readonly initialContent: string;
+  readonly onChange?: (content: string) => void;
 }) {
   const normalized = useRef<string | null>(null);
   const [status, setStatus] = useState<NoteSaveStatus>('idle');
@@ -83,7 +85,9 @@ function NoteEditor({
       }
       const large = new TextEncoder().encode(content).length > MAX_NOTE_BYTES;
       setTooLarge(large);
-      if (!large) saver.update(content);
+      if (large) return;
+      saver.update(content);
+      onChange?.(content);
     },
   });
 

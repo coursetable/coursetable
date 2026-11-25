@@ -21,3 +21,16 @@ export function parseNoteContent(content: string): JSONContent | null {
 export function isWebLink(url: string) {
   return /^https?:\/\//iu.test(url);
 }
+
+export function noteText(content: string) {
+  const parts: string[] = [];
+  const walk = (node: JSONContent | null) => {
+    if (!node) return;
+    if (node.text) parts.push(node.text);
+    node.content?.forEach(walk);
+    if (node.type !== 'text') parts.push(' ');
+  };
+  const doc = parseNoteContent(content);
+  if (doc) walk(doc);
+  return parts.join('').replace(/\s+/gu, ' ').trim();
+}
