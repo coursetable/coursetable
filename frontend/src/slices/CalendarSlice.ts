@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { StateCreator } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
+import type { Crn } from '../queries/graphql-types';
 import { useStore, type Store } from '../store';
 import type { CourseRBCEvent } from '../utilities/calendar';
 import {
@@ -14,6 +15,8 @@ import {
 type ColorPickerDraft = {
   readonly picked?: CourseColor | undefined;
   readonly themeId?: number | undefined;
+  // From the randomize button: a slot for every course, custom ones included
+  readonly randomized?: ReadonlyMap<Crn, number> | undefined;
   // Colors of a theme open in the theme editor, saved separately with it
   readonly editedTheme?:
     | { readonly id: number; readonly colors: readonly string[] }
@@ -109,8 +112,9 @@ export function useColorPickerPreview() {
             draft.picked,
             selectedTheme,
             themeChanged,
+            draft.randomized,
           ),
-    [courses, crn, draft.picked, selectedTheme, themeChanged],
+    [courses, crn, draft.picked, selectedTheme, themeChanged, draft.randomized],
   );
   const edit =
     draft.editedTheme?.id === selectedTheme.id ? draft.editedTheme : undefined;

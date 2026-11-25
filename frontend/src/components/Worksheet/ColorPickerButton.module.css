@@ -154,6 +154,33 @@
   border-color: hsl(0deg 0% 70%);
 }
 
+.themeRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Matches the theme selector beside it */
+.randomizeButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.625rem;
+  border: solid 2px var(--color-border-control);
+  border-radius: 8px;
+  background-color: var(--color-select);
+  color: var(--color-text-secondary);
+  transition:
+    border-color 0.1s,
+    background-color var(--trans-dur),
+    color var(--trans-dur);
+}
+
+.randomizeButton:hover {
+  border-color: hsl(0deg 0% 70%);
+  color: var(--color-text);
+}
+
 .themeSelectorName {
   overflow: hidden;
   text-overflow: ellipsis;

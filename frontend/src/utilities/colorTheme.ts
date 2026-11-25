@@ -30,6 +30,20 @@ export function randomThemeColor(theme: ColorTheme) {
 
 export type CourseColor = { color: string; colorIndex: number | null };
 
+// A random slot for each course, dealt from a shuffled deck so up to a
+// theme's worth of courses don't repeat a color
+export function randomSlots(
+  crns: readonly Crn[],
+  slotCount: number,
+): Map<Crn, number> {
+  const deck = Array.from({ length: slotCount }, (_, i) => i);
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j]!, deck[i]!];
+  }
+  return new Map(crns.map((crn, i) => [crn, deck[i % slotCount]!]));
+}
+
 /**
  * Gives every course the theme's color for its slot. A custom color gets a
  * slot picked by CRN: arbitrary, but stable, so previews don't reshuffle on
@@ -58,9 +72,9 @@ export function applyThemeEdit<T extends CourseColor>(
 }
 
 /**
- * Courses as the color picker would save them. Changing the theme recolors
- * every course; otherwise only the picked course changes, so a stored color is
- * never rewritten for no reason.
+ * Courses as the color picker would save them. Changing the theme or
+ * randomizing recolors every course; otherwise only the picked course
+ * changes, so a stored color is never rewritten for no reason.
  */
 export function applyColorDraft<T extends CourseColor & { crn: Crn }>(
   courses: readonly T[],
@@ -68,8 +82,16 @@ export function applyColorDraft<T extends CourseColor & { crn: Crn }>(
   picked: CourseColor | undefined,
   theme: ColorTheme,
   themeChanged: boolean,
+  randomized?: ReadonlyMap<Crn, number>,
 ): T[] {
-  const recolored = themeChanged ? applyTheme(courses, theme) : courses;
+  const slotted = randomized
+    ? courses.map((course) => ({
+        ...course,
+        colorIndex: randomized.get(course.crn) ?? course.colorIndex,
+      }))
+    : courses;
+  const recolored =
+    themeChanged || randomized ? applyTheme(slotted, theme) : slotted;
   return recolored.map((course) => {
     if (course.crn !== crn || !picked) return course;
     // A preset follows the theme; a custom color stays as picked

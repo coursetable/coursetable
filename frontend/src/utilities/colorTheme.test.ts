@@ -6,6 +6,7 @@ import {
   applyThemeEdit,
   fallbackTheme,
   getWorksheetTheme,
+  randomSlots,
 } from './colorTheme';
 import type { ColorTheme } from '../queries/api';
 import type { Crn } from '../queries/graphql-types';
@@ -98,5 +99,49 @@ describe('applyThemeEdit', () => {
         next.colors,
       ),
     ).toEqual([{ color: next.colors[2], colorIndex: 2 }, custom]);
+  });
+});
+
+describe('randomSlots', () => {
+  it("doesn't repeat a slot until every one is used", () => {
+    const slots = randomSlots(
+      Array.from({ length: 10 }, (_, i) => crn(i)),
+      10,
+    );
+    expect(new Set(slots.values()).size).toBe(10);
+  });
+
+  it('cycles through slots for more courses than colors', () => {
+    const slots = randomSlots(
+      Array.from({ length: 12 }, (_, i) => crn(i)),
+      10,
+    );
+    expect(slots.size).toBe(12);
+    expect(new Set(slots.values()).size).toBe(10);
+  });
+});
+
+describe('applyColorDraft randomized', () => {
+  it('recolors every course, custom ones included', () => {
+    const randomized = new Map([
+      [crn(1), 8],
+      [crn(2), 0],
+    ]);
+    expect(
+      applyColorDraft(
+        [
+          { crn: crn(1), color: '#000003', colorIndex: 3 },
+          { crn: crn(2), color: '#123456', colorIndex: null },
+        ],
+        crn(1),
+        undefined,
+        next,
+        false,
+        randomized,
+      ),
+    ).toEqual([
+      { crn: crn(1), color: next.colors[8], colorIndex: 8 },
+      { crn: crn(2), color: next.colors[0], colorIndex: 0 },
+    ]);
   });
 });

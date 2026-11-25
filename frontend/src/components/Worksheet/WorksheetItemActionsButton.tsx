@@ -12,6 +12,7 @@ import {
   Dropdown,
   Form,
 } from 'react-bootstrap';
+import { BsFillDice6Fill } from 'react-icons/bs';
 import { FaEllipsisH } from 'react-icons/fa';
 import { FaCheck, FaChevronLeft, FaPlus, FaRegCopy } from 'react-icons/fa6';
 import { MdEdit, MdMoveToInbox } from 'react-icons/md';
@@ -33,7 +34,11 @@ import { useColorPickerPreview } from '../../slices/CalendarSlice';
 import { useWorksheetNumberOptions } from '../../slices/WorksheetSlice';
 import { useStore } from '../../store';
 import { type CourseRBCEvent, localizer } from '../../utilities/calendar';
-import { type CourseColor, fallbackTheme } from '../../utilities/colorTheme';
+import {
+  type CourseColor,
+  fallbackTheme,
+  randomSlots,
+} from '../../utilities/colorTheme';
 import { toSeasonString } from '../../utilities/course';
 import { SurfaceComponent, Input } from '../Typography';
 import styles from './ColorPickerButton.module.css';
@@ -203,23 +208,24 @@ export function ColorPickerModal({
       season: viewedSeason,
       worksheetNumber: viewedWorksheetNumber,
     };
-    // A theme change saves the recolored courses with it in one request.
-    // Otherwise only the open course can have changed.
-    const saved = themeChanged
-      ? await updateWorksheetMetadata({
-          action: 'setColorTheme',
-          ...worksheet,
-          colorThemeId: theme.id,
-          courses: changed,
-        })
-      : changed.length === 0 ||
-        (await updateWorksheetCourses(
-          changed.map((c) => ({
-            action: 'update' as const,
+    // Recoloring several courses (a theme change or randomizing) saves them
+    // with the theme in one request
+    const saved =
+      themeChanged || changed.length > 1
+        ? await updateWorksheetMetadata({
+            action: 'setColorTheme',
             ...worksheet,
-            ...c,
-          })),
-        ));
+            colorThemeId: theme.id,
+            courses: changed,
+          })
+        : changed.length === 0 ||
+          (await updateWorksheetCourses(
+            changed.map((c) => ({
+              action: 'update' as const,
+              ...worksheet,
+              ...c,
+            })),
+          ));
     if (!saved) return;
     if (themeChanged || changed.length > 0) await worksheetsRefresh();
     handleClose();
@@ -242,6 +248,16 @@ export function ColorPickerModal({
           presetColors={theme.colors}
           themeName={theme.name}
           themePanelOpen={themePanelOpen}
+          onRandomize={() =>
+            updateColorPickerDraft({
+              randomized: randomSlots(
+                courses.map((c) => c.crn),
+                theme.colors.length,
+              ),
+              // The open course is randomized too
+              picked: undefined,
+            })
+          }
           onToggleThemePanel={() => {
             if (themePanelOpen) closeThemePanel();
             else setThemePanelOpen(true);
@@ -435,6 +451,7 @@ function Picker({
   presetColors,
   themeName,
   themePanelOpen,
+  onRandomize,
   onToggleThemePanel,
 }: {
   readonly color: string;
@@ -443,6 +460,7 @@ function Picker({
   readonly presetColors: readonly string[];
   readonly themeName: string;
   readonly themePanelOpen: boolean;
+  readonly onRandomize: () => void;
   readonly onToggleThemePanel: () => void;
 }) {
   // Anything not picked from the theme's presets is a custom color
@@ -473,16 +491,35 @@ function Picker({
             />
           ))}
         </div>
-        <button
-          type="button"
-          className={styles.themeSelector}
-          onClick={onToggleThemePanel}
-          aria-expanded={themePanelOpen}
-          aria-label={`Color theme: ${themeName}`}
-        >
-          <FaChevronLeft className={styles.themeSelectorChevron} />
-          <span className={styles.themeSelectorName}>{themeName}</span>
-        </button>
+        <div className={styles.themeRow}>
+          <button
+            type="button"
+            className={styles.themeSelector}
+            onClick={onToggleThemePanel}
+            aria-expanded={themePanelOpen}
+            aria-label={`Color theme: ${themeName}`}
+          >
+            <FaChevronLeft className={styles.themeSelectorChevron} />
+            <span className={styles.themeSelectorName}>{themeName}</span>
+          </button>
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip id="color-picker-randomize-tooltip" {...props}>
+                Randomize
+              </Tooltip>
+            )}
+          >
+            <button
+              type="button"
+              className={styles.randomizeButton}
+              onClick={onRandomize}
+              aria-label="Randomize all colors"
+            >
+              <BsFillDice6Fill />
+            </button>
+          </OverlayTrigger>
+        </div>
       </div>
     </div>
   );
