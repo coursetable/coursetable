@@ -1,0 +1,15 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.btn {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  text-decoration: none;
+}

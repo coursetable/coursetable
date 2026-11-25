@@ -11,6 +11,7 @@ import {
   bigserial,
   serial,
   integer,
+  text,
 } from 'drizzle-orm/pg-core';
 import type { PersonalBlock } from '../src/user/personalBlock.js';
 
@@ -196,5 +197,22 @@ export const savedSearches = pgTable(
     savedSearchesNameUniqueIdx: uniqueIndex(
       'saved_searches_name_unique_idx',
     ).on(table.netId, table.name),
+  }),
+);
+
+export const courseNotes = pgTable(
+  'courseNotes',
+  {
+    id: serial('id').primaryKey().notNull(),
+    netId: varchar('netId', { length: 8 }).notNull(),
+    sameCourseId: integer('sameCourseId').notNull(),
+    content: text('content').notNull(),
+    updatedAt: bigint('updatedAt', { mode: 'number' }).notNull(),
+  },
+  (table) => ({
+    courseNotesUniqueIdx: uniqueIndex('course_notes_unique_idx').on(
+      table.netId,
+      table.sameCourseId,
+    ),
   }),
 );

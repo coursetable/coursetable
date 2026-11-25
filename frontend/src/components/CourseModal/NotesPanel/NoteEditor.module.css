@@ -1,0 +1,54 @@
+.box {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+}
+
+.box:focus-within {
+  border-color: var(--color-border-control);
+}
+
+.editor :global(.ProseMirror) {
+  min-height: 360px;
+  padding: 0.75rem 1rem;
+  outline: none;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+.editor :global(.ProseMirror) p {
+  margin: 0 0 0.5rem;
+}
+
+.editor :global(.ProseMirror) ul,
+.editor :global(.ProseMirror) ol {
+  margin: 0 0 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.editor :global(.ProseMirror) li p {
+  margin: 0;
+}
+
+.editor :global(.ProseMirror) ul ul {
+  list-style: circle;
+}
+
+.editor :global(.ProseMirror) ul ul ul {
+  list-style: square;
+}
+
+.editor :global(.ProseMirror) a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.editor :global(.ProseMirror) p:global(.is-editor-empty):first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+}
