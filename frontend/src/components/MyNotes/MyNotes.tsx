@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import clsx from 'clsx';
-import { Form } from 'react-bootstrap';
+import { Form, ListGroup } from 'react-bootstrap';
 import { MdOpenInNew } from 'react-icons/md';
 
 import { fetchCourseNotes, type CourseNote } from '../../queries/api';
@@ -86,13 +86,15 @@ function MyNotes() {
   } | null>(null);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<'recent' | 'subject'>('recent');
+  const [reloading, setReloading] = useState(true);
 
-  // The course pop-up can edit the same note, so reload once it closes
   useEffect(() => {
     if (modalOpen) return undefined;
     let cancelled = false;
+    setReloading(true);
     void fetchCourseNotes().then((fetched) => {
       if (cancelled) return;
+      setReloading(false);
       if (!fetched) {
         setLoaded((prev) => (prev === 'loading' ? 'failed' : prev));
         return;
@@ -169,7 +171,7 @@ function MyNotes() {
 
   return (
     <>
-      <div className={styles.toolbar}>
+      <div className="d-flex flex-wrap align-items-center gap-2 mb-3">
         <Form.Control
           type="search"
           value={query}
@@ -182,24 +184,27 @@ function MyNotes() {
           value={sort}
           onChange={(e) => setSort(e.target.value as 'recent' | 'subject')}
           aria-label="Sort notes"
-          className={styles.sort}
+          className="w-auto"
         >
           <option value="recent">Recently edited</option>
           <option value="subject">Subject</option>
         </Form.Select>
-        <span className={styles.count}>
+        <TextComponent type="tertiary" small>
           {shown.length} of {items.length} notes
-        </span>
+        </TextComponent>
       </div>
       <div className={styles.split}>
-        <div className={styles.list}>
+        <ListGroup variant="flush" className={styles.list}>
           {shown.length === 0 && (
-            <p className={styles.noMatch}>No notes match “{query.trim()}”.</p>
+            <TextComponent type="tertiary" as="p" className="p-3 mb-0">
+              No notes match “{query.trim()}”.
+            </TextComponent>
           )}
           {shown.map((item) => (
-            <button
+            <ListGroup.Item
               key={item.id}
-              type="button"
+              action
+              as="button"
               className={clsx(
                 styles.item,
                 item.id === active?.id && styles.itemActive,
@@ -209,39 +214,56 @@ function MyNotes() {
                 setSelected({ id: item.id, content: item.content })
               }
             >
-              <span className={styles.itemLine}>
-                <span className={styles.code}>
+              <div className="d-flex align-items-baseline gap-2 min-w-0">
+                <strong className="flex-shrink-0">
                   {item.course?.codes[0] ?? 'Unknown course'}
-                </span>
+                </strong>
                 {item.course && (
-                  <span className={styles.title} title={item.course.title}>
+                  <TextComponent
+                    type="tertiary"
+                    small
+                    className="text-truncate"
+                    title={item.course.title}
+                  >
                     {item.course.title}
-                  </span>
+                  </TextComponent>
                 )}
-              </span>
-              <span className={styles.snippet}>
+              </div>
+              <TextComponent
+                type="secondary"
+                small
+                as="div"
+                className="text-truncate"
+              >
                 {item.text || 'Empty note'}
-              </span>
-              <span className={styles.meta}>{editedAgo(item.updatedAt)}</span>
-            </button>
+              </TextComponent>
+              <TextComponent type="tertiary" small as="div">
+                {editedAgo(item.updatedAt)}
+              </TextComponent>
+            </ListGroup.Item>
           ))}
-        </div>
-        <div className={styles.detail}>
+        </ListGroup>
+        <div className={clsx(styles.detail, 'px-4 py-3')}>
           {active && selected && (
             <>
-              <div className={styles.detailHead}>
+              <div
+                className={clsx(
+                  styles.detailHead,
+                  'd-flex flex-wrap justify-content-between align-items-start gap-2 mb-3 pb-2',
+                )}
+              >
                 <div>
-                  <div className={styles.meta}>
+                  <TextComponent type="tertiary" small as="div">
                     {active.course?.codes.join(' / ')}
-                  </div>
-                  <h4 className={styles.detailTitle}>
+                  </TextComponent>
+                  <h4 className="h5 mb-0">
                     {active.course?.title ?? 'Unknown course'}
                   </h4>
-                  <div className={styles.meta}>
+                  <TextComponent type="tertiary" small as="div">
                     {active.course &&
                       `Latest offering: ${toSeasonString(active.course.season)} · `}
                     Edited {editedAgo(active.updatedAt)}
-                  </div>
+                  </TextComponent>
                 </div>
                 {active.course && (
                   <Link
@@ -253,13 +275,13 @@ function MyNotes() {
                       searchParams,
                     )}
                     state={{ courseModalView: 'notes' }}
-                    className={styles.open}
+                    className="d-inline-flex align-items-center gap-1 text-nowrap"
                   >
                     Open course <MdOpenInNew aria-hidden />
                   </Link>
                 )}
               </div>
-              {!modalOpen && typeof loaded === 'object' && (
+              {!modalOpen && !reloading && typeof loaded === 'object' && (
                 <NoteEditor
                   key={`${selected.id}-${loaded.version}`}
                   sameCourseId={selected.id}

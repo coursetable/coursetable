@@ -899,12 +899,6 @@ function Profile() {
             <Card className={styles.profileCard}>
               <Card.Body className={styles.cardBody}>
                 <h3 className={styles.sectionTitle}>My Notes</h3>
-                <TextComponent
-                  type="secondary"
-                  className={styles.wishlistIntro}
-                >
-                  Every note you write on a course, in one place.
-                </TextComponent>
                 {activeTabKey === 'notes' && <MyNotes />}
               </Card.Body>
             </Card>
