@@ -291,6 +291,13 @@
   border-radius: 4px;
 }
 
+/* Room for react-colorful's 28px pointers, which stick out half their width
+   at the picker's edges and would otherwise make the body scroll sideways */
+.themeEditor {
+  margin-inline: -14px;
+  padding-inline: 14px;
+}
+
 .themeEditor :global(.react-colorful) {
   flex-shrink: 0;
   width: 100%;
