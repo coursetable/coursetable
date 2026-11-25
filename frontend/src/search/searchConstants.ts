@@ -84,7 +84,7 @@ export const filterLabels: { [K in keyof Filters]: string } = {
   selectBuilding: 'Building',
   enableQuist: 'Enable Quist',
   hideCancelled: 'Hide cancelled courses',
-  hideFull: 'Hide full sections (nightly data)',
+  hideFull: 'Hide full sections',
   hideConflicting: 'Hide courses with conflicting times',
   includeAttributes: 'Include',
   excludeAttributes: 'Exclude',

@@ -7,6 +7,7 @@ import type {
   CourseSectionsQuery,
   CourseModalPrefetchListingDataFragment,
 } from '../../../generated/graphql-types';
+import { useLastUpdated } from '../../../hooks/useLastUpdated';
 import { useCourseSectionsQuery } from '../../../queries/graphql-queries';
 import type { Option } from '../../../search/searchTypes';
 import { useStore } from '../../../store';
@@ -40,6 +41,7 @@ function SectionLink({
   readonly onNavigation: ModalNavigationFunction;
 }) {
   const [searchParams] = useSearchParams();
+  const updated = useLastUpdated();
   const full = isSectionFull(section);
   const timeString = section.course.course_meetings
     .map(
@@ -68,7 +70,7 @@ function SectionLink({
                 id={`section-full-option-${section.course.season_code}-${section.crn}`}
                 {...props}
               >
-                <small>{sectionFullTooltip}</small>
+                <small>{sectionFullTooltip(updated?.relative ?? null)}</small>
               </Tooltip>
             )}
           >
@@ -107,6 +109,7 @@ function SectionsDropdown({
   readonly sections: CourseSectionsQuery['listings'];
   readonly onNavigation: ModalNavigationFunction;
 }) {
+  const updated = useLastUpdated();
   const hasDifferentTitles =
     new Set(sections.map((section) => section.course.title)).size > 1;
   const full = isSectionFull(listing);
@@ -133,7 +136,9 @@ function SectionsDropdown({
       clearIcon={false}
       className={styles.sectionsDropdownButton}
       wrapperClassName={styles.sectionsDropdown}
-      tooltipText={full ? sectionFullTooltip : undefined}
+      tooltipText={
+        full ? sectionFullTooltip(updated?.relative ?? null) : undefined
+      }
       buttonTextColor={full ? 'var(--color-section-full)' : undefined}
       ariaLabel={
         full
