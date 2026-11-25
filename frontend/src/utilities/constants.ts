@@ -436,7 +436,18 @@ export const barChartColors = [
   '#00e800',
 ];
 
-export const sectionFullTooltip = 'This section is full. Updated nightly.';
+export function sectionFullTooltip(lastUpdated: string | null) {
+  const asOf = lastUpdated === null ? '' : ` as of ${lastUpdated} ago`;
+  return `This section is marked full${asOf}. Check Yale Course Search for current availability.`;
+}
+
+export function hideFullTooltip(lastUpdated: string | null) {
+  const refreshed =
+    lastUpdated === null
+      ? 'Section availability is refreshed nightly'
+      : `Section availability was last refreshed ${lastUpdated} ago`;
+  return `${refreshed}. Check Yale Course Search for current availability.`;
+}
 
 // The days_of_week field on course_meetings is a bitmask where the ith bit
 // (1 << i) represents whether the course meets on the ith day of the week.

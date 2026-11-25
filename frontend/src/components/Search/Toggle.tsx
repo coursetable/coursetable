@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
-import { Form } from 'react-bootstrap';
+import { Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { IoFlaskOutline } from 'react-icons/io5';
+import { MdInfoOutline } from 'react-icons/md';
+import { useLastUpdated } from '../../hooks/useLastUpdated';
 import { useSearch } from '../../hooks/useSearch';
 import { filterLabels } from '../../search/searchConstants';
 import type { BooleanOptions } from '../../search/searchTypes';
+import { hideFullTooltip } from '../../utilities/constants';
 import styles from './Toggle.module.css';
 
 export default function Toggle<K extends BooleanOptions>({
@@ -12,6 +15,7 @@ export default function Toggle<K extends BooleanOptions>({
   readonly handle: K;
 }) {
   const { filters, setStartTime } = useSearch();
+  const updated = useLastUpdated();
   const label = filterLabels[handleName];
   const handle = filters[handleName];
   return (
@@ -41,6 +45,21 @@ export default function Toggle<K extends BooleanOptions>({
           filterLabels[handleName]
         )}
       </Form.Check.Label>
+      {handleName === 'hideFull' && (
+        <OverlayTrigger
+          placement="top"
+          trigger={['hover', 'focus', 'click']}
+          overlay={(overlayProps) => (
+            <Tooltip id="hide-full-info" {...overlayProps}>
+              <small>{hideFullTooltip(updated?.relative ?? null)}</small>
+            </Tooltip>
+          )}
+        >
+          <span className="ms-1">
+            <MdInfoOutline />
+          </span>
+        </OverlayTrigger>
+      )}
     </Form.Check>
   );
 }

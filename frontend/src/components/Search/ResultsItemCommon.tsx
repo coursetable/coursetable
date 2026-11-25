@@ -8,6 +8,7 @@ import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { IoPersonOutline } from 'react-icons/io5';
+import { useLastUpdated } from '../../hooks/useLastUpdated';
 import type { CatalogListing } from '../../queries/api';
 import type { Season } from '../../queries/graphql-types';
 import {
@@ -120,6 +121,7 @@ function FullSectionIndicator({
   readonly section: string;
   readonly badge: boolean;
 }) {
+  const updated = useLastUpdated();
   return (
     <OverlayTrigger
       placement="top"
@@ -128,7 +130,7 @@ function FullSectionIndicator({
           id={`section-full-${listing.course.season_code}-${listing.crn}`}
           {...props}
         >
-          <small>{sectionFullTooltip}</small>
+          <small>{sectionFullTooltip(updated?.relative ?? null)}</small>
         </Tooltip>
       )}
     >
