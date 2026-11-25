@@ -319,10 +319,12 @@
 }
 
 /* Room for react-colorful's 28px pointers, which stick out half their width
-   at the picker's edges and would otherwise make the body scroll sideways */
+   at the picker's edges. They can still land a subpixel past it, so never
+   scroll sideways. */
 .themeEditor {
   margin-inline: -14px;
   padding-inline: 14px;
+  overflow-x: hidden;
 }
 
 .themeEditor :global(.react-colorful) {
