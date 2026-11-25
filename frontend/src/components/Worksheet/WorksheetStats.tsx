@@ -191,7 +191,7 @@ export default function WorksheetStats() {
     if (!courseWorkload) coursesWithoutWorkload.push(listing.course_code);
     courseCnt++;
     credits += listing.course.credits ?? 0;
-    workload += courseWorkload ?? 0;
+    workload += (courseWorkload ?? 0) * (listing.course.credits ?? 1);
     rating += courseRating ?? 0;
     classHoursListings.push(listing);
     skillsAreas.push(
