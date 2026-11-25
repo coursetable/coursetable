@@ -371,6 +371,11 @@ export async function updateWorksheetMetadata(
         private: boolean;
       }
     | {
+        action: 'setLockCustomColors';
+        worksheetNumber: number;
+        lockCustomColors: boolean;
+      }
+    | {
         action: 'setColorTheme';
         worksheetNumber: number;
         colorThemeId: number;
@@ -802,6 +807,8 @@ const worksheetCourseSchema = z.object({
 const worksheetSchema = z.object({
   name: z.string(),
   private: z.boolean().optional(),
+  // Friends' worksheets don't include this
+  lockCustomColors: z.boolean().optional(),
   // Null means the user's default theme. Friends' worksheets don't include it
   colorThemeId: z.number().nullable().optional(),
   courses: z.array(worksheetCourseSchema),

@@ -84,17 +84,22 @@ export const createCalendarSlice: StateCreator<Store, [], [], CalendarSlice> = (
  * since the theme editor saves that itself.
  */
 export function useColorPickerPreview() {
-  const { courses, colorThemes, savedThemeId, crn, draft } = useStore(
-    useShallow((state) => ({
-      courses: state.courses,
-      colorThemes: state.colorThemes,
-      savedThemeId: state.worksheets
-        ?.get(state.viewedSeason)
-        ?.get(state.viewedWorksheetNumber)?.colorThemeId,
-      crn: state.openColorPickerEvent?.listing.crn,
-      draft: state.colorPickerDraft,
-    })),
-  );
+  const { courses, colorThemes, savedThemeId, lockCustomColors, crn, draft } =
+    useStore(
+      useShallow((state) => ({
+        courses: state.courses,
+        colorThemes: state.colorThemes,
+        savedThemeId: state.worksheets
+          ?.get(state.viewedSeason)
+          ?.get(state.viewedWorksheetNumber)?.colorThemeId,
+        lockCustomColors:
+          state.worksheets
+            ?.get(state.viewedSeason)
+            ?.get(state.viewedWorksheetNumber)?.lockCustomColors ?? false,
+        crn: state.openColorPickerEvent?.listing.crn,
+        draft: state.colorPickerDraft,
+      })),
+    );
   const selectedTheme = getWorksheetTheme(
     colorThemes,
     draft.themeId ?? savedThemeId,
@@ -106,15 +111,20 @@ export function useColorPickerPreview() {
     () =>
       crn === undefined
         ? courses
-        : applyColorDraft(
-            courses,
-            crn,
-            draft.picked,
-            selectedTheme,
+        : applyColorDraft(courses, crn, draft.picked, selectedTheme, {
             themeChanged,
-            draft.randomized,
-          ),
-    [courses, crn, draft.picked, selectedTheme, themeChanged, draft.randomized],
+            randomized: draft.randomized,
+            lockCustomColors,
+          }),
+    [
+      courses,
+      crn,
+      draft.picked,
+      selectedTheme,
+      themeChanged,
+      draft.randomized,
+      lockCustomColors,
+    ],
   );
   const edit =
     draft.editedTheme?.id === selectedTheme.id ? draft.editedTheme : undefined;
@@ -126,6 +136,7 @@ export function useColorPickerPreview() {
     courses: previewCourses,
     toSave,
     picked: draft.picked,
+    lockCustomColors,
     theme: edit
       ? { ...selectedTheme, colors: [...edit.colors] }
       : selectedTheme,

@@ -52,8 +52,11 @@ export function randomSlots(
 export function applyTheme<T extends CourseColor & { crn: Crn }>(
   courses: readonly T[],
   theme: ColorTheme,
+  // The worksheet setting: custom colors stay as they are
+  lockCustomColors = false,
 ): T[] {
   return courses.map((course) => {
+    if (lockCustomColors && course.colorIndex === null) return course;
     const colorIndex = course.colorIndex ?? course.crn % theme.colors.length;
     return { ...course, color: theme.colors[colorIndex]!, colorIndex };
   });
@@ -81,17 +84,30 @@ export function applyColorDraft<T extends CourseColor & { crn: Crn }>(
   crn: Crn,
   picked: CourseColor | undefined,
   theme: ColorTheme,
-  themeChanged: boolean,
-  randomized?: ReadonlyMap<Crn, number>,
+  {
+    themeChanged,
+    randomized,
+    lockCustomColors = false,
+  }: {
+    readonly themeChanged: boolean;
+    readonly randomized?: ReadonlyMap<Crn, number> | undefined;
+    readonly lockCustomColors?: boolean;
+  },
 ): T[] {
   const slotted = randomized
-    ? courses.map((course) => ({
-        ...course,
-        colorIndex: randomized.get(course.crn) ?? course.colorIndex,
-      }))
+    ? courses.map((course) =>
+        lockCustomColors && course.colorIndex === null
+          ? course
+          : {
+              ...course,
+              colorIndex: randomized.get(course.crn) ?? course.colorIndex,
+            },
+      )
     : courses;
   const recolored =
-    themeChanged || randomized ? applyTheme(slotted, theme) : slotted;
+    themeChanged || randomized
+      ? applyTheme(slotted, theme, lockCustomColors)
+      : slotted;
   return recolored.map((course) => {
     if (course.crn !== crn || !picked) return course;
     // A preset follows the theme; a custom color stays as picked

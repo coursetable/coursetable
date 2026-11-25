@@ -150,6 +150,8 @@ export const worksheets = pgTable(
     worksheetNumber: integer('worksheetNumber').notNull(),
     name: varchar('name', { length: 64 }).notNull(),
     private: boolean('private').notNull().default(false),
+    // Theme changes, randomizing and resets leave custom colors alone
+    lockCustomColors: boolean('lockCustomColors').notNull().default(false),
     // Null means the user's default theme (Classic)
     colorThemeId: integer('colorThemeId').references(() => colorThemes.id, {
       onDelete: 'set null',

@@ -282,12 +282,12 @@ export function ColorPickerModal({
           themes={colorThemes ?? [fallbackTheme]}
           selectedTheme={theme}
           // A new theme recolors every course, so a custom color picked
-          // before it is dropped too
+          // before it is dropped too (unless the worksheet locks them)
           onSelect={(themeId) =>
             updateColorPickerDraft({
               themeId,
               picked:
-                preview.picked?.colorIndex === null
+                preview.picked?.colorIndex === null && !preview.lockCustomColors
                   ? undefined
                   : preview.picked,
             })

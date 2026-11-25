@@ -243,6 +243,7 @@ export const getUserWorksheet = async (
       worksheetNumber: true,
       name: true,
       private: true,
+      lockCustomColors: true,
       colorThemeId: true,
     },
     with: {
@@ -322,6 +323,13 @@ const SetPrivateWorksheetSchema = z.object({
   private: z.boolean(),
 });
 
+const SetLockCustomColorsWorksheetSchema = z.object({
+  action: z.literal('setLockCustomColors'),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  worksheetNumber: z.number().int().min(0),
+  lockCustomColors: z.boolean(),
+});
+
 const SetColorThemeWorksheetSchema = z.object({
   action: z.literal('setColorTheme'),
   season: z.string().transform((val) => parseInt(val, 10)),
@@ -342,6 +350,7 @@ const UpdateWorksheetMetadataSchema = z.union([
   DeleteWorksheetSchema,
   RenameWorksheetSchema,
   SetPrivateWorksheetSchema,
+  SetLockCustomColorsWorksheetSchema,
   SetColorThemeWorksheetSchema,
 ]);
 
@@ -485,6 +494,26 @@ export const updateWorksheetMetadata = async (
     });
 
     if (!updated) {
+      res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
+      return;
+    }
+    res.sendStatus(200);
+  } else if (action === 'setLockCustomColors') {
+    const { worksheetNumber, lockCustomColors } = bodyParseRes.data;
+
+    const updatedWorksheets = await db
+      .update(worksheets)
+      .set({ lockCustomColors })
+      .where(
+        and(
+          eq(worksheets.netId, netId),
+          eq(worksheets.season, season),
+          eq(worksheets.worksheetNumber, worksheetNumber),
+        ),
+      )
+      .returning({ worksheetNumber: worksheets.worksheetNumber });
+
+    if (updatedWorksheets.length === 0) {
       res.status(400).json({ error: 'WORKSHEET_NOT_FOUND' });
       return;
     }

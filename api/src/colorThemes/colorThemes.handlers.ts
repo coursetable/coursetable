@@ -198,11 +198,29 @@ export const deleteColorTheme = async (
         .where(inAffectedWorksheet);
     } else {
       // Every course takes a default theme color. Custom colors first get a
-      // slot, picked by CRN like the frontend does so previews match.
+      // slot, picked by CRN like the frontend does so previews match, except
+      // in worksheets that lock them.
       await tx
         .update(worksheetCourses)
         .set({ colorIndex: sql`${worksheetCourses.crn} % 10` })
-        .where(and(inAffectedWorksheet, isNull(worksheetCourses.colorIndex)));
+        .where(
+          and(
+            isNull(worksheetCourses.colorIndex),
+            inArray(
+              worksheetCourses.worksheetId,
+              tx
+                .select({ id: worksheets.id })
+                .from(worksheets)
+                .where(
+                  and(
+                    eq(worksheets.netId, netId),
+                    eq(worksheets.colorThemeId, id),
+                    eq(worksheets.lockCustomColors, false),
+                  ),
+                ),
+            ),
+          ),
+        );
       const fallback = await tx.query.colorThemes.findFirst({
         where: and(
           eq(colorThemes.netId, netId),

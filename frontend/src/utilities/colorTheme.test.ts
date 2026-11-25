@@ -60,7 +60,9 @@ describe('applyColorDraft', () => {
   ];
 
   it('recolors every course when the theme changes', () => {
-    expect(applyColorDraft(courses, crn(1), undefined, next, true)).toEqual([
+    expect(
+      applyColorDraft(courses, crn(1), undefined, next, { themeChanged: true }),
+    ).toEqual([
       { crn: crn(1), color: next.colors[3], colorIndex: 3 },
       { crn: crn(2), color: next.colors[2], colorIndex: 2 },
     ]);
@@ -73,7 +75,7 @@ describe('applyColorDraft', () => {
         crn(1),
         { color: '#ffff01', colorIndex: 1 },
         next,
-        false,
+        { themeChanged: false },
       ),
     ).toEqual([
       { crn: crn(1), color: next.colors[1], colorIndex: 1 },
@@ -83,7 +85,9 @@ describe('applyColorDraft', () => {
 
   it('keeps a custom color picked after switching themes', () => {
     const picked = { color: '#abcdef', colorIndex: null };
-    expect(applyColorDraft(courses, crn(1), picked, next, true)[0]).toEqual({
+    expect(
+      applyColorDraft(courses, crn(1), picked, next, { themeChanged: true })[0],
+    ).toEqual({
       crn: crn(1),
       ...picked,
     });
@@ -136,12 +140,37 @@ describe('applyColorDraft randomized', () => {
         crn(1),
         undefined,
         next,
-        false,
-        randomized,
+        { themeChanged: false, randomized },
       ),
     ).toEqual([
       { crn: crn(1), color: next.colors[8], colorIndex: 8 },
       { crn: crn(2), color: next.colors[0], colorIndex: 0 },
     ]);
+  });
+});
+
+describe('locked custom colors', () => {
+  const courses = [
+    { crn: crn(1), color: '#000003', colorIndex: 3 },
+    { crn: crn(2), color: '#123456', colorIndex: null },
+  ];
+
+  it('survive a theme change', () => {
+    expect(applyTheme(courses, next, true)).toEqual([
+      { crn: crn(1), color: next.colors[3], colorIndex: 3 },
+      courses[1],
+    ]);
+  });
+
+  it('survive randomizing', () => {
+    const [, custom] = applyColorDraft(courses, crn(1), undefined, next, {
+      themeChanged: false,
+      randomized: new Map([
+        [crn(1), 8],
+        [crn(2), 0],
+      ]),
+      lockCustomColors: true,
+    });
+    expect(custom).toEqual(courses[1]);
   });
 });
