@@ -2,6 +2,12 @@ import debounce from 'lodash.debounce';
 
 export type NoteSaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
+let pending: Promise<void> = Promise.resolve();
+
+export function whenNotesSaved() {
+  return pending;
+}
+
 export function createNoteSaver({
   initialContent,
   save,
@@ -15,27 +21,26 @@ export function createNoteSaver({
 }) {
   let latestContent = initialContent;
   let savedContent = initialContent;
-  let isSaving = false;
+  let queue: Promise<void> = Promise.resolve();
 
   const saveLatest = async () => {
-    if (isSaving) return;
+    const content = latestContent;
+    onStatusChange('saving');
+    const succeeded = await save(content).catch(() => false);
+    if (succeeded) savedContent = content;
+    onStatusChange(succeeded ? 'saved' : 'error');
+  };
+
+  const enqueue = () => {
     if (latestContent === savedContent) {
       onStatusChange('saved');
       return;
     }
-    isSaving = true;
-    onStatusChange('saving');
-    const content = latestContent;
-    const succeeded = await save(content).catch(() => false);
-    isSaving = false;
-    if (succeeded) savedContent = content;
-    if (latestContent !== content) await saveLatest();
-    else onStatusChange(succeeded ? 'saved' : 'error');
+    queue = queue.then(saveLatest);
+    pending = Promise.allSettled([pending, queue]).then(() => undefined);
   };
 
-  const debouncedSave = debounce(() => {
-    void saveLatest();
-  }, delay);
+  const debouncedSave = debounce(enqueue, delay);
 
   return {
     setBaseline(content: string) {
@@ -47,7 +52,8 @@ export function createNoteSaver({
       debouncedSave();
     },
     flush() {
-      debouncedSave.flush();
+      debouncedSave.cancel();
+      enqueue();
     },
   };
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import NoteEditor from './NoteEditor';
+import { whenNotesSaved } from './noteSaver';
 import type { CourseModalPrefetchListingDataFragment } from '../../../generated/graphql-types';
 import { fetchCourseNote } from '../../../queries/api';
 import Spinner from '../../Spinner';
@@ -17,9 +18,11 @@ function NotesPanel({
 
   useEffect(() => {
     let cancelled = false;
-    void fetchCourseNote(sameCourseId).then((res) => {
-      if (!cancelled) setNote(res ?? 'failed');
-    });
+    void whenNotesSaved()
+      .then(() => fetchCourseNote(sameCourseId))
+      .then((res) => {
+        if (!cancelled) setNote(res ?? 'failed');
+      });
     return () => {
       cancelled = true;
     };
