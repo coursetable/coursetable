@@ -33,6 +33,14 @@ export default function WorksheetCalendarListItem({
   } = useWorksheetCalendarListContext();
   const target = useCourseModalLink(listing);
   const setHoverCourse = useStore((state) => state.setHoverCourse);
+  const setCalendarHoverCourse = useStore(
+    (state) => state.setCalendarHoverCourse,
+  );
+  // Hidden courses have no calendar block, so a leftover calendar hover
+  // (e.g. the block was hidden from under the cursor) shouldn't show
+  const isCalendarHovered = useStore(
+    (state) => !hidden && state.calendarHoverCourse === listing.crn,
+  );
   const { viewedPerson, user } = useStore(
     useShallow((state) => ({
       viewedPerson: state.viewedPerson,
@@ -63,10 +71,15 @@ export default function WorksheetCalendarListItem({
       className={clsx(
         styles.listItem,
         isHighlighted && styles.listItemHighlighted,
+        isCalendarHovered && styles.listItemHovered,
         'py-1',
         'px-2',
       )}
-      onMouseEnter={() => setHoverCourse(listing.crn)}
+      onMouseEnter={() => {
+        setHoverCourse(listing.crn);
+        // The cursor left the calendar, even if its mouseleave never fired
+        setCalendarHoverCourse(null);
+      }}
       onMouseLeave={() => setHoverCourse(null)}
     >
       <Link

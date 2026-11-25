@@ -182,6 +182,7 @@ function WorksheetCalendar({
     viewedSeason,
     setOpenColorPickerEvent,
     setOpenWorksheetMoveEvent,
+    setCalendarHoverCourse,
     isCalendarViewLocked,
     calendarLockStart,
     calendarLockEnd,
@@ -196,6 +197,7 @@ function WorksheetCalendar({
       viewedSeason: state.viewedSeason,
       setOpenColorPickerEvent: state.setOpenColorPickerEvent,
       setOpenWorksheetMoveEvent: state.setOpenWorksheetMoveEvent,
+      setCalendarHoverCourse: state.setCalendarHoverCourse,
       isCalendarViewLocked: state.isCalendarViewLocked,
       calendarLockStart: state.calendarLockStart,
       calendarLockEnd: state.calendarLockEnd,
@@ -334,6 +336,17 @@ function WorksheetCalendar({
             flexDirection: 'column',
             height: '100%',
           }}
+          // Highlight the matching worksheet list item
+          onMouseEnter={
+            event.kind === 'course' && !isMobile
+              ? () => setCalendarHoverCourse(event.listing.crn)
+              : undefined
+          }
+          onMouseLeave={
+            event.kind === 'course' && !isMobile
+              ? () => setCalendarHoverCourse(null)
+              : undefined
+          }
         >
           {event.kind === 'personal' ? (
             <CalendarEventLines
@@ -361,7 +374,12 @@ function WorksheetCalendar({
         </div>
       ),
     }),
-    [suppressCalendarEventSelection, personalBlocks],
+    [
+      suppressCalendarEventSelection,
+      personalBlocks,
+      isMobile,
+      setCalendarHoverCourse,
+    ],
   );
   useEffect(() => {
     if (!selectedEvent) return;

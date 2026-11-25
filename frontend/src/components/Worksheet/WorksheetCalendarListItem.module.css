@@ -10,7 +10,8 @@
     color var(--trans-dur);
 }
 
-.listItem:hover {
+.listItem:hover,
+.listItemHovered {
   background-color: var(--color-primary-subdued);
 }
 
@@ -28,6 +29,7 @@
   transition: 0.05s opacity;
 }
 
+.listItemHovered .hideButtonHidden,
 .listItem:hover .hideButtonHidden {
   opacity: 1;
 }

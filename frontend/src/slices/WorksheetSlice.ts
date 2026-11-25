@@ -58,6 +58,8 @@ interface WorksheetState {
   // Affect visual display
   worksheetView: WorksheetView;
   hoverCourse: Crn | null;
+  // Course whose calendar block is hovered; only highlights its list item
+  calendarHoverCourse: Crn | null;
 
   // These are used to select the worksheet
   seasonCodes: Season[];
@@ -87,6 +89,9 @@ interface WorksheetActions {
 
   changeWorksheetView: (view: WorksheetState['worksheetView']) => void;
   setHoverCourse: (course: WorksheetState['hoverCourse']) => void;
+  setCalendarHoverCourse: (
+    course: WorksheetState['calendarHoverCourse'],
+  ) => void;
 
   setWorksheetInfo: (
     courses: WorksheetState['courses'],
@@ -184,12 +189,16 @@ export const createWorksheetSlice: StateCreator<
   },
   worksheetView: 'calendar',
   hoverCourse: null,
+  calendarHoverCourse: null,
   changeWorksheetView(view) {
     set({ worksheetView: view });
     window.scrollTo({ top: 0, left: 0 });
   },
   setHoverCourse(course) {
     set({ hoverCourse: course });
+  },
+  setCalendarHoverCourse(course) {
+    set({ calendarHoverCourse: course });
   },
   seasonCodes: [],
   courses: [],
