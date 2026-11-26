@@ -1,3 +1,10 @@
+.friendIdentity {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  padding-right: 24px;
+}
+
 .removeFriendIcon {
   position: absolute;
   right: 10px;

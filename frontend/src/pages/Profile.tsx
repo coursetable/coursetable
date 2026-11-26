@@ -3,18 +3,21 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import clsx from 'clsx';
 import { Button, Card, Form, Spinner, Tab, Tabs } from 'react-bootstrap';
-import { BsFillPersonFill } from 'react-icons/bs';
 import { useApolloClient } from '@apollo/client';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
+import YaleMojiLink from '../components/Navbar/YaleMojiLink';
+import { PeopleYaleMoji } from '../components/PeopleYaleMoji';
 import { Popout } from '../components/Search/Popout';
 import { PopoutSelect } from '../components/Search/PopoutSelect';
 import { LinkLikeText, TextComponent } from '../components/Typography';
+import { UserYaleMoji } from '../components/UserYaleMoji';
 import WishlistItems from '../components/Wishlist/WishlistItems';
 import AddFriendDropdown from '../components/Worksheet/AddFriendDropdown';
 import { resetCatalogCache } from '../ferry/ferryCatalogCache';
 import { useFerry, useWorksheetInfo } from '../hooks/useFerry';
 import { useWishlist } from '../hooks/useWishlist';
+import { useYaleMoji } from '../hooks/useYaleMoji';
 import {
   getMyProfile,
   revokeEvaluationsAccess,
@@ -136,6 +139,7 @@ function Profile() {
     addFriend,
     viewedSeason,
   } = useStore(useShallow(selectProfileStore));
+  const { avatar } = useYaleMoji(currentUser?.netId);
   const { requestSeasons } = useFerry();
   const apolloClient = useApolloClient();
 
@@ -325,7 +329,6 @@ function Profile() {
       ? `${currentUser.firstName} ${currentUser.lastName}`
       : null;
 
-  const hasName = Boolean(currentUser.firstName && currentUser.lastName);
   const friendsList = friends ? Object.entries(friends) : [];
   const friendRequestsList = friendRequests ?? [];
   const friendsLoading = !friends || !friendRequests;
@@ -424,31 +427,36 @@ function Profile() {
   return (
     <div className={clsx(styles.container, 'mx-auto')}>
       <div className={styles.headerContainer}>
-        <div
-          className={clsx(
-            hasName ? styles.profileAvatar : styles.profileAvatarAnon,
-          )}
-        >
-          {hasName ? (
-            <span title={fullName || undefined}>
-              {currentUser.firstName![0]!}
-              {currentUser.lastName![0]!}
-            </span>
-          ) : (
-            <BsFillPersonFill size={20} />
-          )}
-        </div>
+        <UserYaleMoji
+          netId={currentUser.netId}
+          name={[currentUser.firstName, currentUser.lastName]
+            .filter(Boolean)
+            .join(' ')}
+          className={styles.profileAvatar}
+        />
         <h1 className={styles.profileHeader}>Profile</h1>
-        {!currentUser.hasEvals && (
-          <Button
-            variant="primary"
-            size="sm"
-            className="ms-2"
-            onClick={() => navigate('/challenge')}
+        <div className={styles.profileActions}>
+          {!currentUser.hasEvals && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => navigate('/challenge')}
+            >
+              Go to challenge
+            </Button>
+          )}
+          <YaleMojiLink
+            href={
+              avatar
+                ? 'https://yalemoji.com/editor?ref=coursetable'
+                : 'https://yalemoji.com/create?ref=coursetable'
+            }
+            className="btn btn-primary btn-sm"
+            target="_blank"
           >
-            Go to challenge
-          </Button>
-        )}
+            {avatar ? 'Edit your Yalemoji' : 'Make your Yalemoji'}
+          </YaleMojiLink>
+        </div>
       </div>
 
       <Tabs
@@ -553,6 +561,10 @@ function Profile() {
                               styles.friendRowLink,
                             )}
                           >
+                            <PeopleYaleMoji
+                              netId={request.netId}
+                              name={request.name}
+                            />
                             <TextComponent>
                               {request.name || request.netId}
                             </TextComponent>
@@ -600,15 +612,21 @@ function Profile() {
                               styles.friendRowLink,
                             )}
                           >
-                            <TextComponent className={styles.friendName}>
-                              {friendData.name || friendNetId}
-                            </TextComponent>
-                            <TextComponent
-                              type="secondary"
-                              className={styles.friendNetId}
-                            >
-                              {friendNetId}
-                            </TextComponent>
+                            <PeopleYaleMoji
+                              netId={friendNetId}
+                              name={friendData.name}
+                            />
+                            <span className={styles.friendIdentityText}>
+                              <TextComponent className={styles.friendName}>
+                                {friendData.name || friendNetId}
+                              </TextComponent>
+                              <TextComponent
+                                type="secondary"
+                                className={styles.friendNetId}
+                              >
+                                {friendNetId}
+                              </TextComponent>
+                            </span>
                           </Link>
                           <div className={styles.friendActions}>
                             <Button

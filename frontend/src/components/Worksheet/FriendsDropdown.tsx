@@ -5,6 +5,7 @@ import { components as selectComponents, type OptionProps } from 'react-select';
 import type { NetId } from '../../queries/graphql-types';
 import type { Option } from '../../search/searchTypes';
 import { useStore } from '../../store';
+import { PeopleYaleMoji } from '../PeopleYaleMoji';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import Spinner from '../Spinner';
@@ -39,7 +40,10 @@ function FriendsDropdownMobile({
                 : '',
           }}
         >
-          <div className="mx-auto">{label}</div>
+          <div className={styles.friendIdentity}>
+            {value !== 'me' && <PeopleYaleMoji netId={value} name={label} />}
+            <span>{label}</span>
+          </div>
         </Dropdown.Item>
       ))}
     </DropdownButton>
@@ -110,6 +114,18 @@ function FriendsDropdownDesktop({
           changeViewedPerson(selectedOption?.value ?? 'me');
         }}
         noOptionsMessage={() => 'No friends found'}
+        formatOptionLabel={(option, { context }) =>
+          context === 'value' ? (
+            option.label
+          ) : (
+            <span className={styles.friendIdentity}>
+              {option.value !== 'me' && (
+                <PeopleYaleMoji netId={option.value} name={option.label} />
+              )}
+              <span>{option.label}</span>
+            </span>
+          )
+        }
         components={{ Option: OptionWithActionButtons }}
         // @ts-expect-error: Passed to OptionWithActionButtons
         removeFriend={removeFriend}

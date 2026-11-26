@@ -1,0 +1,89 @@
+.banner {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  color: white;
+  background: linear-gradient(
+    90deg,
+    rgb(68 103 196) 0%,
+    rgb(75 127 192) 50%,
+    rgb(99 166 208) 100%
+  );
+  transition:
+    grid-template-rows 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 240ms ease;
+}
+
+.banner[data-open='true'] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.clip {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3em;
+  padding: 0 40px;
+}
+
+.link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 0.25em;
+  padding: 8px 0;
+  color: inherit;
+  font-size: 0.9em;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: inherit;
+}
+
+.action {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.closeButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background: rgb(255 255 255 / 15%);
+}
+
+.link:focus-visible,
+.closeButton:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    transition: none;
+  }
+}
