@@ -38,6 +38,7 @@ type BaseFetchOptions = {
     category: string;
   };
   cacheBust?: boolean;
+  sensitiveBody?: boolean;
   /**
    * Receives the parsed error code. If it returns true, the error is considered
    * handled and no further reporting is done. Only HTTP errors can be handled.
@@ -137,6 +138,7 @@ async function fetchAPI(
     handleErrorCode,
     mapHttpError,
     cacheBust,
+    sensitiveBody,
   } = options;
   const payload = JSON.stringify(body);
   const isCatalogRequest = isCatalogEndpoint(endpointSuffix);
@@ -210,7 +212,10 @@ async function fetchAPI(
     Sentry.addBreadcrumb({
       level: 'info',
       ...breadcrumb,
-      message: body ? `${breadcrumb.message} ${payload}` : breadcrumb.message,
+      message:
+        body && !sensitiveBody
+          ? `${breadcrumb.message} ${payload}`
+          : breadcrumb.message,
     });
     Sentry.captureException(err);
     toast.error(
@@ -1175,5 +1180,56 @@ export async function deleteSavedSearch(id: number) {
           return false;
       }
     },
+  });
+}
+
+const courseNoteSchema = z.object({ content: z.string() });
+
+export async function fetchCourseNote(sameCourseId: number) {
+  return await fetchAPI('/notes/lookup', {
+    body: { sameCourseId },
+    schema: courseNoteSchema,
+    breadcrumb: {
+      category: 'notes',
+      message: 'Fetching course note',
+    },
+  });
+}
+
+const courseNotesSchema = z.object({
+  notes: z.array(
+    z.object({
+      sameCourseId: z.number(),
+      content: z.string(),
+      updatedAt: z.number(),
+    }),
+  ),
+});
+
+export type CourseNote = z.infer<typeof courseNotesSchema>['notes'][number];
+
+export async function fetchCourseNotes() {
+  const res = await fetchAPI('/notes/list', {
+    schema: courseNotesSchema,
+    breadcrumb: {
+      category: 'notes',
+      message: 'Fetching course notes',
+    },
+  });
+  return res?.notes;
+}
+
+export async function saveCourseNote(
+  sameCourseId: number,
+  content: string,
+): Promise<boolean> {
+  return await fetchAPI('/notes/save', {
+    body: { sameCourseId, content },
+    sensitiveBody: true,
+    breadcrumb: {
+      category: 'notes',
+      message: 'Saving course note',
+    },
+    handleErrorCode: () => true,
   });
 }

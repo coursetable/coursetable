@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
 import { Helmet } from 'react-helmet';
 
@@ -21,6 +21,7 @@ import styles from './CourseModal.module.css';
 const EvaluationsPanel = suspended(
   () => import('./EvaluationsPanel/EvaluationsPanel'),
 );
+const NotesPanel = suspended(() => import('./NotesPanel/NotesPanel'));
 
 export type ModalNavigationFunction = ((
   mode: 'push' | 'replace',
@@ -35,7 +36,13 @@ function CourseModal({
 }: {
   readonly listing: CourseModalPrefetchListingDataFragment;
 }) {
-  const [view, setView] = useState<'overview' | 'evals'>('overview');
+  const location = useLocation();
+  const [view, setView] = useState<'overview' | 'evals' | 'notes'>(() =>
+    (location.state as { courseModalView?: string } | null)?.courseModalView ===
+    'notes'
+      ? 'notes'
+      : 'overview',
+  );
   const [searchParams] = useSearchParams();
   const { closeModal, navigate } = useModalHistory();
   const title = `${listing.course_code} ${listing.course.section.padStart(2, '0')}: ${listing.course.title} - Yale ${toSeasonString(listing.course.season_code)} | CourseTable`;
@@ -99,13 +106,17 @@ function CourseModal({
           />
         </Modal.Header>
         <Modal.Body>
-          {view === 'overview' ? (
+          {view === 'overview' && (
             <OverviewPanel onNavigation={onNavigation} prefetched={listing} />
-          ) : (
+          )}
+          {view === 'evals' && (
             <EvaluationsPanel
               seasonCode={listing.course.season_code}
               crn={listing.crn}
             />
+          )}
+          {view === 'notes' && (
+            <NotesPanel key={listing.course.same_course_id} listing={listing} />
           )}
         </Modal.Body>
       </Modal>

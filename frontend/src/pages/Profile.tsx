@@ -29,13 +29,16 @@ import type { NetId } from '../queries/graphql-types';
 import type { Option } from '../search/searchTypes';
 import { useStore, type Store } from '../store';
 import { bumpCatalogCacheBustToken } from '../utilities/catalogCache';
-import { createCourseModalLink } from '../utilities/display';
+import { createCourseModalLink, suspended } from '../utilities/display';
 import styles from './Profile.module.css';
+
+const MyNotes = suspended(() => import('../components/MyNotes/MyNotes'));
 
 const PROFILE_TAB_KEYS = [
   'overview',
   'settings',
   'wishlist',
+  'notes',
   'advanced',
 ] as const;
 type ProfileTabKey = (typeof PROFILE_TAB_KEYS)[number];
@@ -48,6 +51,7 @@ function tabParamToActiveKey(tabParam: string | null): ProfileTabKey {
   if (tabParam === 'overview') return 'overview';
   if (tabParam === 'settings') return 'settings';
   if (tabParam === 'wishlist') return 'wishlist';
+  if (tabParam === 'notes') return 'notes';
   if (tabParam === 'advanced') return 'advanced';
   return 'overview';
 }
@@ -56,6 +60,7 @@ function activeKeyToTabParam(key: ProfileTabKey): string | null {
   if (key === 'overview') return null;
   if (key === 'settings') return 'settings';
   if (key === 'wishlist') return 'wishlist';
+  if (key === 'notes') return 'notes';
   return 'advanced';
 }
 
@@ -894,6 +899,16 @@ function Profile() {
                     courseLinkClassName={styles.friendLink}
                   />
                 )}
+              </Card.Body>
+            </Card>
+          </div>
+        </Tab>
+        <Tab eventKey="notes" title="My Notes">
+          <div className={styles.tabContent}>
+            <Card className={styles.profileCard}>
+              <Card.Body className={styles.cardBody}>
+                <h3 className={styles.sectionTitle}>My Notes</h3>
+                {activeTabKey === 'notes' && <MyNotes />}
               </Card.Body>
             </Card>
           </div>
