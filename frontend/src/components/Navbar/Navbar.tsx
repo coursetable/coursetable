@@ -90,6 +90,7 @@ export default function CourseTableNavbar() {
         <PWAPrompt
           isShown={showPWAPrompt}
           appIconPath="/icon200x200.png"
+          copyShareStep="Press the 'Share' button"
           onClose={() => setShowPWAPrompt(false)}
         />
         {/* Logo in top left and random underneath */}
