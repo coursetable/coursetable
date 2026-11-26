@@ -16,6 +16,7 @@
   height: 100%;
   align-items: center;
   justify-content: center;
+  container-type: inline-size;
 }
 
 .image img {
@@ -33,7 +34,7 @@
   justify-content: center;
   background-color: var(--color-primary);
   color: var(--color-text-light);
-  font-size: 0.75em;
+  font-size: 38cqw;
   font-weight: 600;
   line-height: 1;
   border-radius: 50%;
