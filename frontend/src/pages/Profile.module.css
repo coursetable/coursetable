@@ -66,7 +66,7 @@
 }
 
 .scrollCard {
-  max-height: 360px;
+  max-height: 400px;
   overflow: auto;
 }
 
@@ -78,6 +78,17 @@
 
 .profileTabs {
   margin-top: 1rem;
+  flex-wrap: nowrap;
+  overflow: auto hidden;
+  scrollbar-width: none;
+}
+
+.profileTabs::-webkit-scrollbar {
+  display: none;
+}
+
+.profileTabs :global(.nav-item) {
+  flex-shrink: 0;
 }
 
 .profileTabs :global(.nav-tabs) {
@@ -86,6 +97,7 @@
 
 .profileTabs :global(.nav-link) {
   color: var(--color-text-secondary);
+  white-space: nowrap;
   border: none;
   border-bottom: 2px solid transparent;
 }

@@ -106,7 +106,12 @@ export default function CourseTableNavbar() {
 
         {/* Mobile nav toggle */}
         <div className={styles.mobileAccountControls}>
-          {isMobile && <AppsDropdown />}
+          {isMobile && (
+            <>
+              <DarkModeButton className={styles.mobileDarkModeBtn} />
+              <AppsDropdown />
+            </>
+          )}
           <Navbar.Toggle
             className={styles.navToggle}
             aria-controls="basic-navbar-nav"
@@ -126,7 +131,9 @@ export default function CourseTableNavbar() {
               onClick={() => setNavExpanded(false)}
               className={styles.navbarLinks}
             >
-              <DarkModeButton className={styles.navbarDarkModeBtn} />
+              {!isMobile && (
+                <DarkModeButton className={styles.navbarDarkModeBtn} />
+              )}
               <NavbarLink to={createCatalogLink()}>Catalog</NavbarLink>
               <NavbarLink to="/worksheet">
                 <span data-tutorial="worksheet-1">Worksheet</span>

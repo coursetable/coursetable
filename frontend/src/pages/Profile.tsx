@@ -467,7 +467,7 @@ function Profile() {
           <div className={styles.tabContent}>
             <div className={styles.twoColumnLayout}>
               <Card className={styles.profileCard}>
-                <Card.Body className={styles.cardBody}>
+                <Card.Body className={clsx(styles.cardBody, styles.scrollCard)}>
                   <h3 className={styles.sectionTitle}>Basic Info</h3>
                   <div className={styles.infoRow}>
                     <TextComponent type="secondary" className={styles.label}>

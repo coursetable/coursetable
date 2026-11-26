@@ -58,10 +58,22 @@
   display: contents;
 }
 
+.mobileDarkModeBtn {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+}
+
 @media (max-width: calc(768px - 0.5px)) {
   .navbar {
     align-items: center !important;
     column-gap: 0.65rem;
+  }
+
+  .mobileDarkModeBtn {
+    margin-left: auto;
   }
 
   .navLogo {
