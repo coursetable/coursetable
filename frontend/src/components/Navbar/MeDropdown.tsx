@@ -12,7 +12,6 @@ import {
   FcQuestions,
   FcFeedback,
   FcPuzzle,
-  FcIdea,
   FcNews,
   FcDownload,
   FcLock,
@@ -21,10 +20,7 @@ import {
 import { useShallow } from 'zustand/react/shallow';
 import { API_ENDPOINT } from '../../config';
 import { useYaleMoji } from '../../hooks/useYaleMoji';
-import {
-  clearYaleMojiCache,
-  markYaleMojiVisit,
-} from '../../hooks/yalemojiCache';
+import { clearYaleMojiCache } from '../../hooks/yalemojiCache';
 import { logout, type UserInfo, type YaleMojiAvatar } from '../../queries/api';
 import { useStore } from '../../store';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
@@ -231,41 +227,26 @@ function DropdownContent({
               </DropdownItem>
             )}
             {authStatus === 'authenticated' && (
-              <>
-                <DropdownItem
-                  iconNode={
-                    avatar ? (
-                      <YaleMojiImage
-                        avatar={avatar}
-                        className={styles.menuAvatar}
-                        onAvatarError={onAvatarError}
-                      />
-                    ) : (
-                      <span className={styles.menuInitials} aria-hidden="true">
-                        {getInitials(user)}
-                      </span>
-                    )
-                  }
-                  to="/profile"
-                  onClick={closeAndScroll}
-                  hideIcon={showMobileNavLinks}
-                >
-                  Profile
-                </DropdownItem>
-                <DropdownItem
-                  icon={FcIdea}
-                  href={
-                    avatar
-                      ? 'https://yalemoji.com/editor?ref=coursetable'
-                      : 'https://yalemoji.com/create?ref=coursetable'
-                  }
-                  externalLink
-                  onClick={() => markYaleMojiVisit()}
-                  hideIcon={showMobileNavLinks}
-                >
-                  {avatar ? 'Edit your Yalemoji' : 'Make your Yalemoji'}
-                </DropdownItem>
-              </>
+              <DropdownItem
+                iconNode={
+                  avatar ? (
+                    <YaleMojiImage
+                      avatar={avatar}
+                      className={styles.menuAvatar}
+                      onAvatarError={onAvatarError}
+                    />
+                  ) : (
+                    <span className={styles.menuInitials} aria-hidden="true">
+                      {getInitials(user)}
+                    </span>
+                  )
+                }
+                to="/profile"
+                onClick={closeAndScroll}
+                hideIcon={showMobileNavLinks}
+              >
+                Profile
+              </DropdownItem>
             )}
             {/* Try tutorial only on desktop */}
             {!isMobile && !isTablet && authStatus === 'authenticated' && (

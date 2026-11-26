@@ -106,7 +106,7 @@ export default function CourseTableNavbar() {
 
         {/* Mobile nav toggle */}
         <div className={styles.mobileAccountControls}>
-          <AppsDropdown />
+          {isMobile && <AppsDropdown />}
           <Navbar.Toggle
             className={styles.navToggle}
             aria-controls="basic-navbar-nav"
@@ -178,7 +178,10 @@ export default function CourseTableNavbar() {
                   </button>
                 </>
               ) : (
-                <MeDropdown />
+                <div className={styles.accountControls}>
+                  <AppsDropdown />
+                  <MeDropdown />
+                </div>
               )}
             </Nav>
           </Navbar.Collapse>
