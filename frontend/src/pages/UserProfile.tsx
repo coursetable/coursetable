@@ -76,6 +76,8 @@ function UserProfile() {
         <div className={styles.headerContainer}>
           <YaleMojiImage
             avatar={profile.yalemoji ?? null}
+            netId={profile.netId}
+            name={profile.displayName}
             className={styles.profileAvatar}
           />
           <h1 className={styles.profileHeader}>

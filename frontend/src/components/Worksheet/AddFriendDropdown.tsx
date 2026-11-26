@@ -244,7 +244,7 @@ function AddFriendDropdownDesktop({
         onInputChange={setSearchText}
         formatOptionLabel={(option) => (
           <span className={styles.friendIdentity}>
-            <PeopleYaleMoji netId={option.value} />
+            <PeopleYaleMoji netId={option.value} name={option.label} />
             <span>{option.label}</span>
           </span>
         )}

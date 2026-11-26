@@ -41,7 +41,7 @@ function FriendsDropdownMobile({
           }}
         >
           <div className={styles.friendIdentity}>
-            {value !== 'me' && <PeopleYaleMoji netId={value} />}
+            {value !== 'me' && <PeopleYaleMoji netId={value} name={label} />}
             <span>{label}</span>
           </div>
         </Dropdown.Item>
@@ -119,7 +119,9 @@ function FriendsDropdownDesktop({
             option.label
           ) : (
             <span className={styles.friendIdentity}>
-              {option.value !== 'me' && <PeopleYaleMoji netId={option.value} />}
+              {option.value !== 'me' && (
+                <PeopleYaleMoji netId={option.value} name={option.label} />
+              )}
               <span>{option.label}</span>
             </span>
           )

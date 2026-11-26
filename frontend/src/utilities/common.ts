@@ -37,3 +37,19 @@ export function pick<T, K extends keyof T>(obj: T, keys: K[]) {
     return acc;
   }, {});
 }
+
+export function getInitials({
+  name,
+  netId,
+}: {
+  readonly name?: string | null;
+  readonly netId?: string | null;
+}) {
+  const words = name?.trim().split(/\s+/u).filter(Boolean) ?? [];
+  const [first] = words;
+  const last = words[words.length - 1];
+  if (words.length >= 2 && first && last)
+    return (first.charAt(0) + last.charAt(0)).toUpperCase();
+  if (netId) return netId.slice(0, 2).toUpperCase();
+  return first?.slice(0, 2).toUpperCase();
+}

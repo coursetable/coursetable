@@ -23,6 +23,7 @@ import { useYaleMoji } from '../../hooks/useYaleMoji';
 import { clearYaleMojiCache } from '../../hooks/yalemojiCache';
 import { logout, type UserInfo, type YaleMojiAvatar } from '../../queries/api';
 import { useStore } from '../../store';
+import { getInitials } from '../../utilities/common';
 import { scrollToTop, useComponentVisible } from '../../utilities/display';
 import { createCatalogLink } from '../../utilities/navigation';
 import { YaleMojiImage } from '../PeopleYaleMoji';
@@ -31,12 +32,11 @@ import styles from './MeDropdown.module.css';
 
 const NOOP = () => {};
 
-function getInitials(user: UserInfo | undefined) {
-  const first = user?.firstName?.trim()[0];
-  const last = user?.lastName?.trim()[0];
-  return first && last
-    ? `${first}${last}`.toUpperCase()
-    : user?.netId.slice(0, 2).toUpperCase();
+function userInitials(user: UserInfo | undefined) {
+  return getInitials({
+    name: [user?.firstName, user?.lastName].filter(Boolean).join(' '),
+    netId: user?.netId,
+  });
 }
 
 function DropdownItem({
@@ -237,7 +237,7 @@ function DropdownContent({
                     />
                   ) : (
                     <span className={styles.menuInitials} aria-hidden="true">
-                      {getInitials(user)}
+                      {userInitials(user)}
                     </span>
                   )
                 }
@@ -315,7 +315,7 @@ function MeDropdown({
     authStatus === 'authenticated' ? user?.netId : undefined,
   );
   const hasName = Boolean(user?.firstName && user.lastName);
-  const initials = getInitials(user);
+  const initials = userInitials(user);
   const fullName = hasName
     ? `${user!.firstName!} ${user!.lastName!}`
     : undefined;

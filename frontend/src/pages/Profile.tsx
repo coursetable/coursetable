@@ -429,6 +429,9 @@ function Profile() {
       <div className={styles.headerContainer}>
         <UserYaleMoji
           netId={currentUser.netId}
+          name={[currentUser.firstName, currentUser.lastName]
+            .filter(Boolean)
+            .join(' ')}
           className={styles.profileAvatar}
         />
         <h1 className={styles.profileHeader}>Profile</h1>
@@ -558,7 +561,10 @@ function Profile() {
                               styles.friendRowLink,
                             )}
                           >
-                            <PeopleYaleMoji netId={request.netId} />
+                            <PeopleYaleMoji
+                              netId={request.netId}
+                              name={request.name}
+                            />
                             <TextComponent>
                               {request.name || request.netId}
                             </TextComponent>
@@ -606,7 +612,10 @@ function Profile() {
                               styles.friendRowLink,
                             )}
                           >
-                            <PeopleYaleMoji netId={friendNetId} />
+                            <PeopleYaleMoji
+                              netId={friendNetId}
+                              name={friendData.name}
+                            />
                             <span className={styles.friendIdentityText}>
                               <TextComponent className={styles.friendName}>
                                 {friendData.name || friendNetId}
