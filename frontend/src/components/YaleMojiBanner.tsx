@@ -41,7 +41,7 @@ export default function YaleMojiBanner() {
             rel="noopener noreferrer"
             tabIndex={open ? 0 : -1}
           >
-            <span>Your avatar across Yale</span>
+            <span>Your avatar across Yale:</span>
             <span className={styles.action}>
               Make your Yalemoji <span aria-hidden="true">↗</span>
             </span>

@@ -38,7 +38,7 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px 0.25em;
   padding: 8px 0;
   color: inherit;
   font-size: 0.9em;
